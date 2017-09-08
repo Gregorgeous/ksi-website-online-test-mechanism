@@ -29,9 +29,21 @@ export default {
   name: 'hello',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
-      drawer: false
+      
     }
+  },
+  created() {
+    //do something after creating vue instance
+
+    // console.log('zalogowałem się anonimowo');
+    // this.$store.dispatch('anonymousSignup');
+
+    let loginData = {
+      email: 'example@example.com',
+      password: 'example1'
+    }
+    this.$store.dispatch('signUpOnStart', loginData);
+
   }
 }
 </script>
