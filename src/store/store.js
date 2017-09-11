@@ -15,46 +15,9 @@ export const store = new Vuex.Store({
         {
           question: "Władzami hufca są (zaznacz prawidłowe odpowiedzi):",
           difficultyLevel: 2,
-          answer1: "zjazd hufca",
-          answer1State: false,
-          isAnswer1Correct: false,
-          answer2: "komendant hufca",
-          answer2State: false,
-          isAnswer2Correct: false,
-          answer3: "zespół kadry kształcącej",
-          answer3State: false,
-          isAnswer3Correct: false,
-          answer4: "komisja rewizyjna hufca",
-          answer4State: false,
-          isAnswer4Correct: false,
-          answer5: "komisja stopni instruktorskich",
-          answer5State: false,
-          isAnswer5Correct: false,
-          answer6: "namiestnik hufca",
-          answer6State: false,
-          isAnswer6Correct: false,
-          answer7: "zgromadzanie komendantów (szefów) środowisk",
-          answer7State: false,
-          isAnswer7Correct: false,
-          answer8: "komenda hufca",
-          answer8State: false,
-          isAnswer8Correct: false,
-          answer9: "szef biura hufca",
-          answer9State: false,
-          isAnswer9Correct: false,
-          answer10: "sąd harcerski hufca, jeżeli zjazd hufca dokona jego wyboru",
-          answer10State: false,
-          isAnswer10Correct: false,
-          answer11: "komendant chorągwi",
-          answer11State: false,
-          isAnswe11Correct: false,
-          answer12: "rada hufca",
-          answer12State: false,
-          isAnswer12Correct: false,
-          answer13: "zlot drużyn i gromad hufcowych",
-          answer13State: false,
-          isAnswer13Correct: false,
-          whichAnswersChosen:''
+          correctAnswers: ["komendant hufca","komisja rewizyjna hufca","komenda hufca","sąd harcerski hufca, jeżeli zjazd hufca dokona jego wyboru",   ],
+          incorrectAnswers:["zjazd hufca","zespół kadry kształcącej","komisja stopni instruktorskich","namiestnik hufca","zgromadzanie komendantów (szefów) środowisk","szef biura hufca","komendant chorągwi","rada hufca","zlot drużyn i gromad hufcowych",],
+          whichAnswersChosen:[]
         }
       ],
       videoBasedQuestions: [],
@@ -341,7 +304,7 @@ export const store = new Vuex.Store({
       imageBasedQuestions: [],
       textFieldQuestions: []
     },
-    categoryIdeaIHhistoria:
+    categoryIdeaIHistoria:
     {
       oneChoiceQuestions: [],
       multiChoiceQuestions: [],
@@ -378,9 +341,14 @@ export const store = new Vuex.Store({
         ],
         textFieldQuestions: [
           {
-            candidatesAnswer: null,
+            candidatesAnswer: 'cos tam cos tam',
             isAnswerCorrect: null,
-            question: null
+            question: 'bla bla bla'
+          },
+          {
+            candidatesAnswer: 'cos tam cos tam 2',
+            isAnswerCorrect: null,
+            question: 'bla bla bla 2'
           }
         ]
       },
@@ -409,9 +377,9 @@ export const store = new Vuex.Store({
         ],
         textFieldQuestions: [
           {
-            candidatesAnswer: null,
+            candidatesAnswer: "E, E, E !!",
             isAnswerCorrect: null,
-            question: null
+            question: "Kuku, Kuku ! "
           }
         ]
       },
@@ -440,9 +408,9 @@ export const store = new Vuex.Store({
         ],
         textFieldQuestions: [
           {
-            candidatesAnswer: null,
+            candidatesAnswer: "Buuu !",
             isAnswerCorrect: null,
-            question: null
+            question: "Kra! Kra ! Kra !"
           }
         ]
       },
@@ -471,9 +439,9 @@ export const store = new Vuex.Store({
         ],
         textFieldQuestions: [
           {
-            candidatesAnswer: null,
+            candidatesAnswer: "Sru sru sru !",
             isAnswerCorrect: null,
-            question: null
+            question: "Łiii! Łiii!"
           }
         ]
       },
@@ -497,9 +465,56 @@ export const store = new Vuex.Store({
       state.candidatesAnswers.categoryIdeaIHistoria = chosenAnswers;
     },
     checkTheAnswers (state) {
-      checkTheAnswers.checkOneChoiceQuestionsAnswers(state);
-      checkTheAnswers.checkVideoBasedQuestionsAnswers(state);
-      checkTheAnswers.checkImageBasedQuestionsAnswers(state);
+      // For each category, we check the answers via "checkingAnswersMechanism.js" file.
+      // First Category
+      let categoryOfQuestions = state.categoryWiedzaOOrganizacji;
+      let candidatesAnswersInThisCat = state.candidatesAnswers.categoryWiedzaOOrganizacji;
+      checkTheAnswers.checkOneChoiceQuestionsAnswers(state,categoryOfQuestions,candidatesAnswersInThisCat);
+      checkTheAnswers.checkVideoBasedQuestionsAnswers(state,categoryOfQuestions,candidatesAnswersInThisCat);
+
+      // Second Category
+      categoryOfQuestions = state.categoryWychowanieMetodaMetodyki;
+      candidatesAnswersInThisCat = state.candidatesAnswers.categoryWychowanieMetodaMetodyki;
+      checkTheAnswers.checkOneChoiceQuestionsAnswers(state,categoryOfQuestions,candidatesAnswersInThisCat);
+      checkTheAnswers.checkVideoBasedQuestionsAnswers(state,categoryOfQuestions,candidatesAnswersInThisCat);
+
+      // Third Category
+      categoryOfQuestions = state.categoryBezpieczenstwo;
+      candidatesAnswersInThisCat = state.candidatesAnswers.categoryBezpieczenstwo;
+      checkTheAnswers.checkOneChoiceQuestionsAnswers(state,categoryOfQuestions,candidatesAnswersInThisCat);
+      checkTheAnswers.checkVideoBasedQuestionsAnswers(state,categoryOfQuestions,candidatesAnswersInThisCat);
+
+      // Fourth Category
+      categoryOfQuestions = state.categoryIdeaIHistoria;
+      candidatesAnswersInThisCat = state.candidatesAnswers.categoryIdeaIHistoria;
+      checkTheAnswers.checkOneChoiceQuestionsAnswers(state,categoryOfQuestions,candidatesAnswersInThisCat);
+      checkTheAnswers.checkVideoBasedQuestionsAnswers(state,categoryOfQuestions,candidatesAnswersInThisCat);
+
+    },
+    gradeTFQuestions({state}, payload) {
+      console.log(payload);
+      // payload.candsCat1TFAnswers
+      // payload.dbCat1TFAnswers
+      // for (var i = 1; i <  payload.candsCat1TFAnswers.length; i++) {
+      //   for (var j = 0; j < payload.dbCat1TFAnswers.length; j++) {
+      //     if (payload.candsCat1TFAnswers[i].question == payload.dbCat1TFAnswers[j].question) {
+      //       console.log(`jestem to po raz ${j} w rundzie ${i} `);
+      //       payload.dbCat1TFAnswers[j].isAnswerCorrect = payload.candsCat1TFAnswers[i].isAnswerCorrect;
+      //       payload.dbCat1TFAnswers.splice(j, 1);
+      //     }
+      //   }
+      // }
+
+      // for (var i = 0; i <  payload.dbCat1TFAnswers.length; i++) {
+      //   for (var j = 1; j < payload.candsCat1TFAnswers.length; j++) {
+      //     if (payload.dbCat1TFAnswers[i].question == payload.candsCat1TFAnswers[j].question) {
+      //       console.log(`jestem to po raz ${j} w rundzie ${i} `);
+      //       payload.candsCat1TFAnswers[j].isAnswerCorrect = payload.dbCat1TFAnswers[i].isAnswerCorrect;
+      //       // TODO: Make some anti-break-system for when there happen to be 2 exact same questions ! Now it breaks..
+      //     }
+      //   }
+      // }
+
     }
   },
   actions: {

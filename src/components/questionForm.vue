@@ -15,7 +15,7 @@
     <form class="testForm"
     action="/"
     method="post"
-    @submit.prevent = "saveTheAnswers"
+    @submit.prevent = "checkTheAnswers"
     >
 
 
@@ -76,75 +76,18 @@ export default {
     }
   },
   methods: {
-    finishTest() {
-      console.log("I'm clicked");
-      this.$router.push('/results-page');
-    },
-    saveTheAnswers(computed) {
-      let candidatesAnswers = {
-        oneChoiceQuestions: [] ,
-        videoBasedQuestions: [] ,
-        imageBasedQuestions: [] ,
-        textFieldQuestions: []
-      };
-      for (var i = 0; i < this.oneChoiceQuestions.length; i++) {
-        let dataFormattedObject = {
-          question: this.oneChoiceQuestions[i].question,
-          candidatesAnswer: this.oneChoiceQuestions[i].whichAnswerChosen,
-          isAnswerCorrect: null
-        }
-        candidatesAnswers.oneChoiceQuestions.push(dataFormattedObject);
-      }
-
-      for (i = 0; i < this.videoBasedQuestions.length; i++) {
-        let dataFormattedObject = {
-          question: this.videoBasedQuestions[i].question,
-          candidatesAnswer: this.videoBasedQuestions[i].whichAnswerChosen,
-          isAnswerCorrect: null
-        }
-        candidatesAnswers.videoBasedQuestions.push(dataFormattedObject);
-      }
-
-      for (i = 0; i < this.imageBasedQuestions.length; i++) {
-        let dataFormattedObject = {
-          question: this.imageBasedQuestions[i].question,
-          candidatesAnswer: this.imageBasedQuestions[i].whichAnswerChosen,
-          isAnswerCorrect: null
-        }
-        candidatesAnswers.imageBasedQuestions.push(dataFormattedObject);
-      }
-
-      console.log(candidatesAnswers);
-      this.$store.commit('mapTheAnswers', candidatesAnswers)
-      // Check the candidate's answers with the db answers
-      this.$store.commit('checkTheAnswers');
-      console.log('sprawdzam !');
-      // redirect to results page
-      console.log("I'm clicked");
-      this.$router.push('/results-page');
-    },
     checkTheAnswers () {
       this.$store.commit('checkTheAnswers');
       console.log('sprawdzam !');
+
+      console.log("przenoszę na inną stronę");
+      this.$router.push('/examiners-dashboard');
     }
   },
   computed: {
-    categoryWiedzaOOrganizacji () {
-      return this.$store.state.categoryWiedzaOOrganizacji;
-    },
-    categoryWychowanieMetodaMetodyki () {
-      return this.$store.state.categoryWychowanieMetodaMetodyki;
-    },
-    categoryBezpieczenstwo () {
-      return this.$store.state.categoryBezpieczenstwo;
-    },
-    categoryIdeaIHhistoria () {
-      return this.$store.state.categoryIdeaIHhistoria;
-    },
-
-    countUpQuestions () {
-      return this.$store.getters.countUpQuestions;
-    }
+    // countUpQuestions () {
+    //   return this.$store.getters.countUpQuestions;
+    // }
   }
 }
 </script>

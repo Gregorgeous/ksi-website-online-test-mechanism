@@ -3,7 +3,7 @@
 
     <v-layout
     class="mt-4"
-    v-for="(oCQuestion, index) in categoryIdeaIHhistoria.oneChoiceQuestions"
+    v-for="(oCQuestion, index) in categoryIdeaIHistoria.oneChoiceQuestions"
     :key="index">
       <v-flex>
         <v-card hover>
@@ -55,7 +55,7 @@
 
     <v-layout
     class="mt-4"
-    v-for="(mCQuestion, index) in categoryIdeaIHhistoria.multiChoiceQuestions"
+    v-for="(mCQuestion, index) in categoryIdeaIHistoria.multiChoiceQuestions"
     :key="index">
       <v-flex>
         <v-card hover>
@@ -100,7 +100,7 @@
 
     <v-layout
     class="mt-4"
-    v-for="(vBQuestion, index) in categoryIdeaIHhistoria.videoBasedQuestions"
+    v-for="(vBQuestion, index) in categoryIdeaIHistoria.videoBasedQuestions"
     :key="index">
       <v-flex>
         <v-card hover>
@@ -159,7 +159,7 @@
 
     <v-layout
     class="mt-4"
-    v-for="(iBQuestion, index) in categoryIdeaIHhistoria.imageBasedQuestions"
+    v-for="(iBQuestion, index) in categoryIdeaIHistoria.imageBasedQuestions"
     :key="index">
       <v-flex>
         <v-card hover>
@@ -218,7 +218,7 @@
 
     <v-layout
     class="mt-4"
-    v-for="(tFQuestion, index) in categoryIdeaIHhistoria.textFieldQuestions"
+    v-for="(tFQuestion, index) in categoryIdeaIHistoria.textFieldQuestions"
     :key="index">
       <v-flex>
         <v-card hover>
@@ -269,28 +269,28 @@ export default {
     }
   },
   computed: {
-    categoryIdeaIHhistoria () {
-      return this.$store.state.categoryIdeaIHhistoria;
+    categoryIdeaIHistoria () {
+      return this.$store.state.categoryIdeaIHistoria;
     },
     oneChoiceQuestions () {
-      return this.$store.state.categoryIdeaIHhistoria.oneChoiceQuestions;
+      return this.$store.state.categoryIdeaIHistoria.oneChoiceQuestions;
     },
     multiChoiceQuestions () {
-      return this.$store.state.categoryIdeaIHhistoria.multiChoiceQuestions;
+      return this.$store.state.categoryIdeaIHistoria.multiChoiceQuestions;
     },
     videoBasedQuestions () {
-      return this.$store.state.categoryIdeaIHhistoria.videoBasedQuestions;
+      return this.$store.state.categoryIdeaIHistoria.videoBasedQuestions;
     },
     imageBasedQuestions () {
-      return this.$store.state.categoryIdeaIHhistoria.imageBasedQuestions;
+      return this.$store.state.categoryIdeaIHistoria.imageBasedQuestions;
     },
     textFieldQuestions () {
-      return this.$store.state.categoryIdeaIHhistoria.textFieldQuestions;
+      return this.$store.state.categoryIdeaIHistoria.textFieldQuestions;
     }
   },
   methods: {
     saveTheAnswers() {
-      let categoryIdeaIHhistoria = {
+      let categoryIdeaIHistoria = {
         oneChoiceQuestions: [] ,
         videoBasedQuestions: [] ,
         imageBasedQuestions: [] ,
@@ -302,7 +302,7 @@ export default {
           candidatesAnswer: this.oneChoiceQuestions[i].whichAnswerChosen,
           isAnswerCorrect: null
         }
-        categoryIdeaIHhistoria.oneChoiceQuestions.push(dataFormattedObject);
+        categoryIdeaIHistoria.oneChoiceQuestions.push(dataFormattedObject);
       }
 
       for (i = 0; i < this.videoBasedQuestions.length; i++) {
@@ -311,7 +311,7 @@ export default {
           candidatesAnswer: this.videoBasedQuestions[i].whichAnswerChosen,
           isAnswerCorrect: null
         }
-        categoryIdeaIHhistoria.videoBasedQuestions.push(dataFormattedObject);
+        categoryIdeaIHistoria.videoBasedQuestions.push(dataFormattedObject);
       }
 
       for (i = 0; i < this.imageBasedQuestions.length; i++) {
@@ -320,7 +320,7 @@ export default {
           candidatesAnswer: this.imageBasedQuestions[i].candidatesAnswer,
           isAnswerCorrect: null
         }
-        categoryIdeaIHhistoria.imageBasedQuestions.push(dataFormattedObject);
+        categoryIdeaIHistoria.imageBasedQuestions.push(dataFormattedObject);
       }
 
       for (i = 0; i < this.textFieldQuestions.length; i++) {
@@ -329,11 +329,11 @@ export default {
           candidatesAnswer: this.textFieldQuestions[i].candidatesAnswer,
           isAnswerCorrect: null
         }
-        categoryIdeaIHhistoria.textFieldQuestions.push(dataFormattedObject);
+        categoryIdeaIHistoria.textFieldQuestions.push(dataFormattedObject);
       }
 
-      console.log(categoryIdeaIHhistoria);
-      this.$store.commit('mapTheFourthCategoryAnswers', categoryIdeaIHhistoria)
+      console.log(categoryIdeaIHistoria);
+      this.$store.commit('mapTheFourthCategoryAnswers', categoryIdeaIHistoria)
     }
   }
 }
