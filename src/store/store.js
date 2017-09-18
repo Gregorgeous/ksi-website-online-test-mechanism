@@ -1,317 +1,19 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import * as firebase from "firebase"
+import fbApp from './../main.js'
 import checkTheAnswers from './checkingAnswersMechanism'
+import drawingQuestionsMechanism from './drawingQuestionsMechanism'
 
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
   state: {
     count: 1,
-    categoryWiedzaOOrganizacji:
-    {
-      oneChoiceQuestions: [],
-      multiChoiceQuestions: [
-        {
-          question: "Władzami hufca są (zaznacz prawidłowe odpowiedzi):",
-          difficultyLevel: 2,
-          correctAnswers: ["komendant hufca","komisja rewizyjna hufca","komenda hufca","sąd harcerski hufca, jeżeli zjazd hufca dokona jego wyboru",   ],
-          incorrectAnswers:["zjazd hufca","zespół kadry kształcącej","komisja stopni instruktorskich","namiestnik hufca","zgromadzanie komendantów (szefów) środowisk","szef biura hufca","komendant chorągwi","rada hufca","zlot drużyn i gromad hufcowych",],
-          whichAnswersChosen:[]
-        }
-      ],
-      videoBasedQuestions: [],
-      imageBasedQuestions: [
-        {
-          imageURL: "",
-          question: "Opisz powyższą fakturę",
-          difficultyLevel: 2,
-          candidatesAnswer: ""
-        },
-        {
-          imageURL: "",
-          question: "Znajdź błąd na powyższej fakturze i napisz jak powinna ona poprawnie wyglądać",
-          difficultyLevel: 3,
-          candidatesAnswer: ""
-        }
-      ],
-      textFieldQuestions: [
-        {
-          question: "W rozkazie komendanta hufca nie ma informacji o zamknięciu Twojej próby przewodnikowej. Co robisz?",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Dlaczego zjazd hufca jest ważny?",
-          difficultyLevel: 2,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Czym różni się czynne prawo wyborcze od biernego prawa wyborczego?",
-          difficultyLevel: 2,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Ile wynosi składka członkowska w ZHP (w chorągwi stołecznej)?",
-          difficultyLevel: 3,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Kto wydaje decyzję w sprawie Dodatkowej Członkowskiej Składki Zadaniowej (DCSZ)? I co to jest DCSZ?",
-          difficultyLevel: 3,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Jaką dokumentację pracy wychowawczo-organizacyjnej musi posiadać drużyna/gromada?",
-          difficultyLevel: 2,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Przygotuj preliminarz biwaku Twojej drużyny/gromady",
-          difficultyLevel: 2,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Jak przechowuje się środki finansowe drużyny/gromady?",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Kto jest Komendantem Hufca Warszawa-Żoliborz, Komendantem Chorągwi Stołecznej ZHP, Naczelnikiem ZHP i Przewodniczącym ZHP?",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Ile zuchów/harcerzy powinna formalnie minimalnie liczyć Twoja gromada/drużyna?",
-          difficultyLevel: 2,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Czym zajmuje się zjazd zwykły hufca?",
-          difficultyLevel: 2,
-          candidatesAnswer: ""
-        },
-        {
-          question: 'Czym zajmuje się zjazd "niezwykły" hufca?',
-          difficultyLevel: 2,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Kto ma prawo głosu na zjeździe hufca?",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        }
-      ]
-    },
-    categoryWychowanieMetodaMetodyki:
-    {
-      oneChoiceQuestions: [],
-      multiChoiceQuestions: [],
-      videoBasedQuestions: [],
-      imageBasedQuestions: [],
-      textFieldQuestions: [
-        {
-          question: "Podaj nazwy trzech instrumentów metodycznych stosowanych w Twojej drużynie/gromadzie",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Wymień cechy metody harcerskiej",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Co oznacza pozytywność w metodzie harcerskiej i dlaczego jest ważna w wychowaniu?",
-          variant2: "Co oznacza indywidualność w metodzie harcerskiej i dlaczego jest ważna w wychowaniu?",
-          variant3: "Co oznacza wzajemność oddziaływań w metodzie harcerskiej i dlaczego jest ważna w wychowaniu?",
-          variant4: "Co oznacza dobrowolność i świadomość celów w metodzie harcerskiej i dlaczego jest ważna w wychowaniu?",
-          variant5: "Co oznacza pośredniość w metodzie harcerskiej i dlaczego jest ważna w wychowaniu?",
-          variant6: "Co oznacza naturalność  w metodzie harcerskiej i dlaczego jest ważna w wychowaniu?",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Co jest misją ZHP?",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Czym jest system małych grup?",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Wymień zasady dobrej zbiórki",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Jakie działania zaproponujesz w poniżej opisanej sytuacji i jak Twoja propozycja wpisuje się w cechy metody harcerskiej?",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Czy uczenie w działaniu jest ważne i dlaczego?",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Drużynowa powtarza sprawdzone wzorce. Zbiorki są zgodne z zasadami dobrej zbiorki, ale z roku na rok w do drużyny przychodzi coraz mniej harcerzy. Jakie mogą być tego przyczyny, jak uważasz?",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Wymień elementy metody harcerskiej",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Wymień nazwy gwiazdek zuchowych i stopni harcerskich oraz opisz sposób ich oznaczania na mundurze",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: 'Jakie znasz instrumenty metodyczne dedykowane dla poszczególnych grup wiekowych',
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Co symbolizują płomienie watry wędrowniczej?",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Opisz jedną z ostatnich zbiórek. W opisie wskaż jakie były jej cele, temat, formy pracy, czy i jak przebiegała praca w małych grupach, jaki był podział obowiązków wśród kadry, czy program zbiórki pozwalał na zdobywanie sprawności. Co się udało a co nie i dlaczego (jak sądzisz)?",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Opisz wrażenia z ostatniej lektury o tematyce harcerskiej. Czy jej treść zainspirowała Ciebie do czegoś, czy udało się ją wykorzystać w drużynie/gromadzie/pracy z kadrą (jak)?",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Jaki jest cel Próby Harcerza i jak długo powinna trwać i czym się kończyć?",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Po jakiem czasie od wstąpienia do drużyny/gromady harcerz/zuch powinien złożyć przyrzeczenie harcerskie/ obietnicę zuchową?",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Czy stopnie harcerskie należy zdobywać kolejno? Uzasadnij odpowiedź?",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        },
-        {
-          question: "Wymień jakie formy pracy wykorzystujesz w drużynie/gromadzie?",
-          difficultyLevel: 1,
-          candidatesAnswer: ""
-        }
-      ]
-    },
-    categoryBezpieczenstwo:
-    {
-      oneChoiceQuestions: [
-        {
-          question: "Pieszy idący po poboczu lub jezdni zobowiązany jest poruszać się:",
-          difficultyLevel: 1,
-          correctAnswer: 'prawą stroną drogi',
-          answer2: 'lewą stronę drogi',
-          whichAnswerChosen:''
-        },
-        {
-          question: "Kolumna pieszych w wieku do 10 lat zobowiązana jest poruszać się:",
-          difficultyLevel: 1,
-          correctAnswer: 'prawą stroną jezdni',
-          answer2: 'lewą stroną jezdni',
-          whichAnswerChosen:''
-        },
-        {
-          question: "Kolumna pieszych w wieku powyżej 10 lat zobowiązana jest poruszać się:",
-          difficultyLevel: 1,
-          correctAnswer: 'prawą stroną jezdni',
-          answer2: 'lewą stronę jezdni',
-          whichAnswerChosen:''
-        },
-        {
-          question: "Niepełnoletni drużynowy:",
-          difficultyLevel: 1,
-          correctAnswer: 'musi mieć opiekuna drużyny/gromady',
-          answer2: 'nie musi mieć opiekuna drużyny/gromady, jeżeli jest instruktorem',
-          answer3: 'musi mieć opiekuna drużyny/gromady, który jest instruktorem',
-          whichAnswerChosen:''
-        },
-        {
-          question: "Kolumnę pieszych może prowadzić po jezdni",
-          difficultyLevel: 1,
-          correctAnswer: 'instruktor',
-          answer2: 'osoba pełnoletnia',
-          answer3: 'tylko drużynowy',
-          whichAnswerChosen:''
-        },
-        {
-          question: "Podczas kolonii zuchowej w kadrze:",
-          difficultyLevel: 1,
-          correctAnswer: 'powinien być co najmniej jeden wychowawca na 15 zuchów',
-          answer2: 'powinien być co najmniej jeden wychowawca na 20 zuchów',
-          whichAnswerChosen:''
-        },
-        {
-          question: "Podczas obozu harcerskiego w kadrze:",
-          difficultyLevel: 1,
-          correctAnswer: 'powinien być co najmniej jeden wychowawca na 20 harcerzy',
-          answer2: 'powinien być co najmniej jeden wychowawca na 15 harcerzy',
-          whichAnswerChosen:''
-        },
-        {
-          question: "Zgoda rodziców (opiekunów prawnych) na przynależność do ZHP jest wymagana w przypadku osób w wieku:",
-          difficultyLevel: 1,
-          correctAnswer: 'do 16 lat',
-          answer2: 'do 18 lat',
-          answer3: 'do 10 lat',
-          whichAnswerChosen:''
-        },
-        {
-          question: "Na kąpielisku wymagana jest obecność:",
-          difficultyLevel: 1,
-          correctAnswer: 'ratownika wodnego i wychowawcy',
-          answer2: 'wychowawcy',
-          answer3: 'ratownika wodnego',
-          whichAnswerChosen:''
-        },
-        {
-          question: "Pływanie na obozie może odbywać się:",
-          difficultyLevel: 1,
-          correctAnswer: 'w wyznaczonym do tego miejscu i po spełnieniu innych warunków',
-          answer2: 'w każdym miejscu pod warunkiem obecności ratownika wodnego',
-          answer3: 'w każdym miejscu pod warunkiem obecności komendanta obozu',
-          whichAnswerChosen:''
-        },
-        {
-          question: "Odpowiedzialność za szkodę wyrządzoną podopiecznym ponosi:",
-          difficultyLevel: 1,
-          correctAnswer: 'wychowawca',
-          answer2: 'ubezpieczyciel',
-          answer3: 'wychowawca i ubezpieczyciel',
-          whichAnswerChosen:''
-        }
-      ],
-      multiChoiceQuestions: [],
-      videoBasedQuestions: [],
-      imageBasedQuestions: [],
-      textFieldQuestions: []
-    },
-    categoryIdeaIHistoria:
-    {
-      oneChoiceQuestions: [],
-      multiChoiceQuestions: [],
-      videoBasedQuestions: [],
-      imageBasedQuestions: [],
-      textFieldQuestions: []
-    },
+    categoryWiedzaOOrganizacji:{},
+    categoryWychowanieMetodaMetodyki:{},
+    categoryBezpieczenstwo:{},
+    categoryIdeaIHistoria:{},
 
 // -------------candidatesAnswers -----------------
 
@@ -445,8 +147,14 @@ export const store = new Vuex.Store({
           }
         ]
       },
-    }
+    },
 
+    candidateDetails: {
+      firstName: '',
+      lastName: '',
+      scoutGroup: '',
+      userID:''
+    }
   },
   mutations: {
     nextQuestion (state) {
@@ -485,39 +193,178 @@ export const store = new Vuex.Store({
       checkTheAnswers.checkVideoBasedQuestionsAnswers(state,categoryOfQuestions,candidatesAnswersInThisCat);
 
       // Fourth Category
-      categoryOfQuestions = state.categoryIdeaIHistoria;
-      candidatesAnswersInThisCat = state.candidatesAnswers.categoryIdeaIHistoria;
-      checkTheAnswers.checkOneChoiceQuestionsAnswers(state,categoryOfQuestions,candidatesAnswersInThisCat);
-      checkTheAnswers.checkVideoBasedQuestionsAnswers(state,categoryOfQuestions,candidatesAnswersInThisCat);
+      // categoryOfQuestions = state.categoryIdeaIHistoria;
+      // candidatesAnswersInThisCat = state.candidatesAnswers.categoryIdeaIHistoria;
+      // checkTheAnswers.checkOneChoiceQuestionsAnswers(state,categoryOfQuestions,candidatesAnswersInThisCat);
+      // checkTheAnswers.checkVideoBasedQuestionsAnswers(state,categoryOfQuestions,candidatesAnswersInThisCat);
 
     },
-    gradeTFQuestions({state}, payload) {
-      console.log(payload);
-      // payload.candsCat1TFAnswers
-      // payload.dbCat1TFAnswers
-      // for (var i = 1; i <  payload.candsCat1TFAnswers.length; i++) {
-      //   for (var j = 0; j < payload.dbCat1TFAnswers.length; j++) {
-      //     if (payload.candsCat1TFAnswers[i].question == payload.dbCat1TFAnswers[j].question) {
-      //       console.log(`jestem to po raz ${j} w rundzie ${i} `);
-      //       payload.dbCat1TFAnswers[j].isAnswerCorrect = payload.candsCat1TFAnswers[i].isAnswerCorrect;
-      //       payload.dbCat1TFAnswers.splice(j, 1);
-      //     }
-      //   }
-      // }
+    gradeTFQuestions({state}) {
+      // This method is basically useless, the vuex store state is reactive to all changes at the componet side ... BUT the Vue.js dev panel doesn't show any updated changes until you commit or dispatch something :P
+      console.log("gradeTFQuestions' executed:See now the updated Vue dev panel");
+    },
+    updateDBquestions(state) {
+      var cat1 = state.categoryWiedzaOOrganizacji;
+      firebase.database().ref('categoryWiedzaOOrganizacji').set(cat1)
+      .then(() => {
+        console.log('Done setting the thing in db');
+      })
 
-      // for (var i = 0; i <  payload.dbCat1TFAnswers.length; i++) {
-      //   for (var j = 1; j < payload.candsCat1TFAnswers.length; j++) {
-      //     if (payload.dbCat1TFAnswers[i].question == payload.candsCat1TFAnswers[j].question) {
-      //       console.log(`jestem to po raz ${j} w rundzie ${i} `);
-      //       payload.candsCat1TFAnswers[j].isAnswerCorrect = payload.dbCat1TFAnswers[i].isAnswerCorrect;
-      //       // TODO: Make some anti-break-system for when there happen to be 2 exact same questions ! Now it breaks..
-      //     }
-      //   }
-      // }
+      var cat2 = state.categoryWychowanieMetodaMetodyki;
+      firebase.database().ref('categoryWychowanieMetodaMetodyki').set(cat2)
+      .then(() => {
+        console.log('Done setting the thing in db');
+      })
 
-    }
+      var cat3 = state.categoryBezpieczenstwo;
+      firebase.database().ref('categoryBezpieczenstwo').set(cat3)
+      .then(() => {
+        console.log('Done setting the thing in db');
+      })
+
+      var cat4 = state.categoryIdeaIHistoria;
+      firebase.database().ref('categoryIdeaIHistoria').set(cat4)
+      .then(() => {
+        console.log('Done setting the thing in db');
+      })
+    },
+    changeUserIdIfNull(state, uId){
+      state.candidateDetails.userID = uId;
+    },
+    fetchTheCandidatesData(state, candidatesData){
+      state.candidateDetails = candidatesData;
+    },
+    CreateNewExamQuestionStack(state, payload){
+      state.categoryWiedzaOOrganizacji = payload.categoryWiedzaOOrganizacji;
+      state.categoryWychowanieMetodaMetodyki = payload.categoryWychowanieMetodaMetodyki;
+      state.categoryBezpieczenstwo = payload.categoryBezpieczenstwo;
+    },
+    fetchQuestionsWhenPageRefreshed(state, ongoingExamStructure) {
+        if (!ongoingExamStructure) {
+          console.log("Brak aktywnego egzaminu w db");
+          console.log("Nie nadpisuję więc Vuexowego Store'a !");
+          return
+        }
+
+        console.log('To mój fetch');
+        console.log(ongoingExamStructure);
+        // if (!state.categoryWiedzaOOrganizacji) {
+          state.categoryWiedzaOOrganizacji = ongoingExamStructure.categoryWiedzaOOrganizacji
+        // }
+        // if (!state.categoryWychowanieMetodaMetodyki) {
+          state.categoryWychowanieMetodaMetodyki = ongoingExamStructure.categoryWychowanieMetodaMetodyki
+        // }
+        // if (!state.categoryBezpieczenstwo) {
+          state.categoryBezpieczenstwo = ongoingExamStructure.categoryBezpieczenstwo
+        // }
+      }
   },
   actions: {
+    initializeCandidate({state}){
+      // IDEA: here we initiale cand in the DB, meaning, we set the data the user gave us at the home page as the "currentActiveCandidate" node in Firebase DB. From now on we always have the data of the user at the exam session, even if we lose connection/refresh the page.
+      let currentCandidate = state.candidateDetails;
+      firebase.database().ref('currentActiveCandidate').set(currentCandidate);
+    },
+    fetchTheCandidateData({commit}){
+      // IDEA: whenever we refresh the website, the data from db is pulled up which user was active before the refresh. This prevents loosing the data about the user in current exam session (e.g. in the middle of writing the test .. !)
+      firebase.database().ref('currentActiveCandidate').once('value')
+      .then((data) => {
+        const object = data.val();
+        const candidate = {
+          firstName: object.firstName,
+          lastName: object.lastName,
+          scoutGroup: object.scoutGroup,
+          userID: object.userID
+        };
+        commit('fetchTheCandidatesData', candidate);
+      })
+      .catch(
+          (error) => {
+            console.log(error);
+          }
+        )
+
+        console.log('przechodzę przez fetching..');
+    },
+    deactivateCurrentCandidate(){
+      // IDEA: Once we finish the exam session, we remove the reference of 'currentActiveCandidate' in the Firebase DB as the candidate has just finished the exam session and that reference is no longer needed
+      firebase.database().ref('currentActiveCandidate').remove();
+    },
+    updateDBquestions({commit}){
+      commit('updateDBquestions');
+    },
+    CreateNewExamQuestionStack({commit,state,dispatch}){
+
+      async function fetchAllQuestionsFromDb (){
+        function getCat1Qs (){
+          return firebase.database()
+          .ref('categoryWiedzaOOrganizacji')
+          .once('value')
+        }
+        function getCat2Qs (){
+          return firebase.database()
+          .ref('categoryWychowanieMetodaMetodyki')
+          .once('value')
+        }
+        function getCat3Qs (){
+          return firebase.database()
+          .ref('categoryBezpieczenstwo')
+          .once('value')
+        }
+
+        let data1 = await getCat1Qs();
+        let cat1Questions = data1.val();
+        let data2  = await getCat2Qs();
+        let cat2Questions = data2.val();
+        let data3  = await getCat3Qs();
+        let cat3Questions = data3.val();
+        let payload = {cat1Questions,cat2Questions,cat3Questions};
+        console.log(payload);
+        return payload;
+      }
+
+      fetchAllQuestionsFromDb().then((dbQuestionsObject)=>{
+        console.log('To poniżej pobrałem z FDB:');
+        console.log(dbQuestionsObject);
+
+        var randomisedQuestionStack = drawingQuestionsMechanism.drawTheQuestions(dbQuestionsObject);
+
+        dispatch('uploadActiveVerOfExamToDb',randomisedQuestionStack);
+
+        commit('CreateNewExamQuestionStack', randomisedQuestionStack );
+      })
+    },
+    fetchQuestionsWhenPageRefreshed({commit}){
+      firebase.database()
+      .ref('currentActiveExamStructure')
+      .once('value')
+      .then((data) => {
+        let ongoingExamStructure = data.val();
+        commit('fetchQuestionsWhenPageRefreshed',ongoingExamStructure);
+      })
+    },
+    uploadActiveVerOfExamToDb({state, commit}, currentExamStructure) {
+      firebase.database()
+      .ref('currentActiveExamStructure')
+      .set(currentExamStructure);
+    },
+    deactivateCurrentExamVersion(){
+      firebase.database().ref('currentActiveExamStructure').remove();
+    },
+    uploadCandsAnswersToDb ({commit, state}) {
+      let userId = state.candidateDetails.userID;
+      if (userId == '' || userId == null){
+        var num = Math.floor((Math.random() * 2000) + 1);
+        userId = `NotNamedCandidate${num}`;
+        commit('changeUserIdIfNull', userId);
+      }
+
+      // console.log(userId);
+      let candidatesTest = state.candidatesAnswers;
+      firebase.database()
+      .ref(`candidatesTestsStack/${userId}`)
+      .set(candidatesTest);
+    },
     anonymousSignup ({commit}) {
       firebase.auth().signInAnonymously().catch(function(error) {
         // Handle Errors here.

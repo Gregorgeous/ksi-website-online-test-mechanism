@@ -37,19 +37,19 @@ export default {
   },
   methods: {
     addQToDb() {
-      let newOCQuestion = {
-        question: "to jest przykładowe pytanie jednokrotnego wyboru, przykładowe pytanie musi miec przynajmniej taką długośc, żeby się ładnie wyświetlało",
-        answer1: 'to jest przykładowa POPRAWNA odpowiedz a',
-        isAnswer1Correct: true,
-        answer2: 'to jest przykładowa odpowiedz b',
-        isAnswer2Correct:false,
-        answer3: 'to jest przykładowa odpowiedz c',
-        isAnswer3Correct:false,
-        answer4: 'to jest przykładowa odpowiedz d',
-        isAnswer4Correct:false
-      }
-      console.log(newOCQuestion);
-      this.$store.dispatch('updateIBQsInDb', newOCQuestion);
+      // let newOCQuestion = {
+      //   question: "to jest przykładowe pytanie jednokrotnego wyboru, przykładowe pytanie musi miec przynajmniej taką długośc, żeby się ładnie wyświetlało",
+      //   answer1: 'to jest przykładowa POPRAWNA odpowiedz a',
+      //   isAnswer1Correct: true,
+      //   answer2: 'to jest przykładowa odpowiedz b',
+      //   isAnswer2Correct:false,
+      //   answer3: 'to jest przykładowa odpowiedz c',
+      //   isAnswer3Correct:false,
+      //   answer4: 'to jest przykładowa odpowiedz d',
+      //   isAnswer4Correct:false
+      // }
+      // console.log(newOCQuestion);
+      this.$store.dispatch('updateDBquestions');
     }
   }
 }

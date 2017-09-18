@@ -6,7 +6,7 @@ import resultsPage from '@/components/resultsPage'
 import examinersDashboard from '@/components/examinersDashboard'
 
 // temp solution
-import updateOCQsDb from '@/components/questionDbUpdates/updateOCQsDb'
+import updateQuestionsDb from '@/components/questionDbUpdates/updateQuestionsDb'
 
 Vue.use(Router)
 
@@ -28,9 +28,9 @@ export default new Router({
       component: resultsPage
     },
     {
-      path: '/update-ocqs-db',
-      name: 'updateOCQsDb',
-      component: updateOCQsDb
+      path: '/update-questions-db',
+      name: 'updateQuestionsDb',
+      component: updateQuestionsDb
     },
     {
       path: '/examiners-dashboard',

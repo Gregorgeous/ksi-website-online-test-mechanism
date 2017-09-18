@@ -58,13 +58,25 @@
       <v-expansion-panel expand>
         <v-expansion-panel-content v-for="(category,key, index) in expansionPanels" :key="key">
           <div slot="header">{{category[0].categoryTitle}}</div>
+
+          <v-layout
+          class="mt-4"
+          v-if="category.length == 1">
+            <v-flex>
+              <v-card>
+                <v-card-title class="justify-center text-xs-center">
+                <h4 class="text-xs-center">W tym teście nie było pytań opisowych dla danej kategorii</h4>
+              </v-card-title>
+              </v-card>
+            </v-flex>
+          </v-layout>
+
           <v-layout
           class="mt-4 "
           v-for="(tFQuestion,index) in category"
           :key="index"
           v-if="tFQuestion.question != undefined">
           <v-flex >
-
             <v-card
             hover
             :class= "comProp(tFQuestion)"
@@ -123,6 +135,16 @@
     </v-btn>
   </v-flex>
 </v-container>
+
+<v-snackbar
+      :timeout="timeout"
+      top='top'
+      v-model="snackbar"
+    >
+      Sprawdzono test !
+      <v-btn flat class="pink--text" @click.native="snackbar = false">Close</v-btn>
+    </v-snackbar>
+
 </div>
 </template>
 
@@ -131,6 +153,8 @@ export default {
   name: 'hello',
   data () {
     return {
+      snackbar: false,
+      timeout:2000,
       expansionPanels: {
         categoryWiedzaOOrganizacji: [
           {categoryTitle: "Dział 1.: Wiedza o organizacji"}
@@ -157,7 +181,7 @@ export default {
       console.log(candsAnswer);
     },
     makeAnswerNull(candsAnswer){
-      candsAnswer.isAnswerCorrect = null;
+      candsAnswer.isAnswerCorrect = -1;
       console.log(candsAnswer);
     },
     comProp (tFQuestion) {
@@ -170,25 +194,17 @@ export default {
       else if (tFQuestion.isAnswerCorrect == true) {
         return 'green'
       }
+      else if (tFQuestion.isAnswerCorrect == -1) {
+        return 'grey lighten-1'
+      }
     },
     finishGradingTheTest () {
-      console.log("klik!");
-      let candsCat1TFAnswers = this.expansionPanels.categoryWiedzaOOrganizacji;
-      let dbCat1TFAnswers = this.$store.state.candidatesAnswers.categoryWiedzaOOrganizacji.textFieldQuestions;
-      this.$store.commit('gradeTFQuestions', {candsCat1TFAnswers, dbCat1TFAnswers});
-
-      // let cat2 = this.expansionPanels.categoryWychowanieMetodaMetodyki;
-      // let dbCat2 = this.$store.state.candidatesAnswers.categoryWychowanieMetodaMetodyki.textFieldQuestions;
-      // this.$store.commit('gradeTFQuestions', cat2, dbCat2);
-      //
-      // let cat3 = this.expansionPanels.categoryBezpieczenstwo;
-      // let dbCat3 = this.$store.state.candidatesAnswers.categoryBezpieczenstwo.textFieldQuestions;
-      // this.$store.commit('gradeTFQuestions', cat3, dbCat3);
-      //
-      // let cat4 = this.expansionPanels.categoryIdeaIHistoria;
-      // let dbCat4 = this.$store.state.candidatesAnswers.categoryIdeaIHistoria.textFieldQuestions;
-      // this.$store.commit('gradeTFQuestions', cat4, dbCat4);
-
+      this.snackbar = true;
+      // BELOW is only for updating view in Vue dev panel
+      this.$store.commit('gradeTFQuestions');
+      this.$store.dispatch('uploadCandsAnswersToDb');
+      this.$store.dispatch('deactivateCurrentCandidate');
+      this.$store.dispatch('deactivateCurrentExamVersion');
     }
   },
   computed: {
@@ -212,12 +228,15 @@ export default {
     //   this.numberOfRightAnswers = this.$store.getters.displayRightAnswersOnResultsPage;
     // }
 
+    this.$store.dispatch("fetchTheCandidateData");
+
+    // NOTE: Below we "attach" all the text field answers from all the categories of questions to the "expansionPanels" variable - so that it displays in a way it does on the website right now using expansion Panel Vuetify UI component
     var cat1TextFieldAnswers = this.candidatesAnswersInCategoryWiedzaOOrganizacji.textFieldQuestions;
 
     cat1TextFieldAnswers.forEach(object => {
       this.expansionPanels.categoryWiedzaOOrganizacji.push(object);
     })
-    console.log(this.expansionPanels.categoryWiedzaOOrganizacji);
+    // console.log(this.expansionPanels.categoryWiedzaOOrganizacji);
 
 
     var cat2TextFieldAnswers = this.candidatesAnswersInCategoryWychowanieMetodaMetodyki.textFieldQuestions;
@@ -225,21 +244,21 @@ export default {
     cat2TextFieldAnswers.forEach(object => {
       this.expansionPanels.categoryWychowanieMetodaMetodyki.push(object);
     })
-    console.log(this.expansionPanels.categoryWychowanieMetodaMetodyki);
+    // console.log(this.expansionPanels.categoryWychowanieMetodaMetodyki);
 
     var cat3TextFieldAnswers = this.candidatesAnswersInCategoryBezpieczenstwo.textFieldQuestions;
 
     cat3TextFieldAnswers.forEach(object => {
       this.expansionPanels.categoryBezpieczenstwo.push(object);
     })
-    console.log(this.expansionPanels.categoryBezpieczenstwo);
+    // console.log(this.expansionPanels.categoryBezpieczenstwo);
 
     var cat4TextFieldAnswers = this.candidatesAnswersInCategoryIdeaIHhistoria.textFieldQuestions;
 
     cat4TextFieldAnswers.forEach(object => {
       this.expansionPanels.categoryIdeaIHistoria.push(object);
     })
-    console.log(this.expansionPanels.categoryIdeaIHistoria);
+    // console.log(this.expansionPanels.categoryIdeaIHistoria);
   }
 }
 </script>

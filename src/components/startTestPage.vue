@@ -1,20 +1,49 @@
 <template>
+  <div >
+
   <v-layout>
     <v-flex xs12  md2 offset-md5 sm3 offset-sm4>
       <v-card class="mp-5 mt-5">
         <v-card-title primary-title>
           <v-flex>
             <div >
-              <h3 class="headline ">Rozpocznij test</h3>
+              <h3 class="headline ">Podaj swoje dane i rozpocznij test</h3>
               <hr>
-              <div>Test będzie trwac X minut.</div>
+              <div class="mt-3">Test będzie trwac X minut.</div>
               <div>Test będzie składac się z X pytań</div>
             </div>
           </v-flex>
         </v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <v-layout wrap>
+            <v-flex xs12>
+              <v-text-field
+              label="Imię"
+              required
+              v-model="thisCandidate.firstName">
+              </v-text-field>
+            </v-flex>
+            <v-flex xs12>
+              <v-text-field
+              label="Nazwisko"
+              required
+              v-model="thisCandidate.lastName">
+              </v-text-field>
+            </v-flex>
+            <v-flex xs12>
+              <v-text-field
+              label="Środowisko służby"
+              required
+              v-model="thisCandidate.scoutGroup"
+              >
+              </v-text-field>
+            </v-flex>
+          </v-layout>
+        </v-card-text>
         <v-card-actions>
           <v-flex>
-            <v-btn flat class="orange--text" to='/question-form'>
+            <v-btn flat class="orange--text" @click="startTheTest">
               Rozpocznij
             </v-btn>
           </v-flex>
@@ -22,28 +51,34 @@
       </v-card>
     </v-flex>
   </v-layout>
+
+</div>
 </template>
 
 <script>
+import * as firebase from "firebase"
+
 export default {
   name: 'hello',
   data () {
     return {
-      
+
     }
   },
-  created() {
-    //do something after creating vue instance
+  methods: {
+    startTheTest() {
+      this.thisCandidate.userID = `${this.thisCandidate.firstName}${this.thisCandidate.lastName}`
+      // console.log(this.thisCandidate);
+      this.$store.dispatch('initializeCandidate');
 
-    // console.log('zalogowałem się anonimowo');
-    // this.$store.dispatch('anonymousSignup');
-
-    let loginData = {
-      email: 'example@example.com',
-      password: 'example1'
+      this.$store.dispatch('CreateNewExamQuestionStack');
+      this.$router.push('/question-form');
     }
-    this.$store.dispatch('signUpOnStart', loginData);
-
+  },
+  computed: {
+    thisCandidate(){
+      return this.$store.state.candidateDetails;
+    }
   }
 }
 </script>

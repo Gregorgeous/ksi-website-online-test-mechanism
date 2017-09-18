@@ -242,7 +242,7 @@ v-for="(tFQuestion, index) in categoryWiedzaOOrganizacji.textFieldQuestions"
 <v-layout class="mt-3">
   <v-flex>
     <v-btn block secondary dark @click="saveTheAnswers">
-      ZAPISZ PYTANIA Z TEGO DZIAŁU
+      ZAPISZ SWOJE ODPOWIEDZI Z TEGO DZIAŁU
     </v-btn>
   </v-flex>
 </v-layout>
