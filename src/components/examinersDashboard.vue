@@ -203,8 +203,8 @@ export default {
       // BELOW is only for updating view in Vue dev panel
       this.$store.commit('gradeTFQuestions');
       this.$store.dispatch('uploadCandsAnswersToDb');
-      this.$store.dispatch('deactivateCurrentCandidate');
       this.$store.dispatch('deactivateCurrentExamVersion');
+      this.$router.push('/results-page');
     }
   },
   computed: {

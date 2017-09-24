@@ -15,22 +15,32 @@ export const store = new Vuex.Store({
     categoryBezpieczenstwo:{},
     categoryIdeaIHistoria:{},
 
-// -------------candidatesAnswers -----------------
+    // -------------candidatesAnswers -----------------
 
     candidatesAnswers: {
       categoryWiedzaOOrganizacji:
       {
         oneChoiceQuestions: [
           {
-            candidatesAnswer: null,
-            isAnswerCorrect: null,
+            whichAnswerChosen: null,
+            correctAnswer: null,
             question: null
+          },
+          {
+            whichAnswerChosen: "bla bla dobrze !",
+            correctAnswer: "bla bla dobrze !",
+            question: "to jest moje pytanie"
+          },
+          {
+            whichAnswerChosen: "bla bla zle !",
+            correctAnswer: "bla bla !",
+            question: "to jest moje pytanie 2 "
           }
         ],
         videoBasedQuestions: [
           {
-            candidatesAnswer: null,
-            isAnswerCorrect: null,
+            whichAnswerChosen: null,
+            correctAnswer: null,
             question: null
           }
         ],
@@ -43,14 +53,14 @@ export const store = new Vuex.Store({
         ],
         textFieldQuestions: [
           {
-            candidatesAnswer: 'cos tam cos tam',
+            candidatesAnswer: 'brak odpowiedzi',
             isAnswerCorrect: null,
-            question: 'bla bla bla'
+            question: 'Błąd: to pytanie powinno się pojawić tylko gdy użytkownik nie zapisze swoich pytań w tej kategorii'
           },
           {
-            candidatesAnswer: 'cos tam cos tam 2',
-            isAnswerCorrect: null,
-            question: 'bla bla bla 2'
+            candidatesAnswer: 'brak odpowiedzi',
+            isAnswerCorrect: true,
+            question: 'Błąd: to pytanie powinno się pojawić tylko gdy użytkownik nie zapisze swoich pytań w tej kategorii'
           }
         ]
       },
@@ -79,9 +89,9 @@ export const store = new Vuex.Store({
         ],
         textFieldQuestions: [
           {
-            candidatesAnswer: "E, E, E !!",
+            candidatesAnswer: 'brak odpowiedzi',
             isAnswerCorrect: null,
-            question: "Kuku, Kuku ! "
+            question: 'Błąd: to pytanie powinno się pojawić tylko gdy użytkownik nie zapisze swoich pytań w tej kategorii'
           }
         ]
       },
@@ -110,9 +120,9 @@ export const store = new Vuex.Store({
         ],
         textFieldQuestions: [
           {
-            candidatesAnswer: "Buuu !",
+            candidatesAnswer: 'brak odpowiedzi',
             isAnswerCorrect: null,
-            question: "Kra! Kra ! Kra !"
+            question: 'Błąd: to pytanie powinno się pojawić tylko gdy użytkownik nie zapisze swoich pytań w tej kategorii'
           }
         ]
       },
@@ -141,18 +151,17 @@ export const store = new Vuex.Store({
         ],
         textFieldQuestions: [
           {
-            candidatesAnswer: "Sru sru sru !",
+            candidatesAnswer: 'brak odpowiedzi',
             isAnswerCorrect: null,
-            question: "Łiii! Łiii!"
+            question: 'Błąd: to pytanie powinno się pojawić tylko gdy użytkownik nie zapisze swoich pytań w tej kategorii'
           }
         ]
       },
     },
-
     candidateDetails: {
-      firstName: '',
-      lastName: '',
-      scoutGroup: '',
+      firstName: '...',
+      lastName: '...',
+      scoutGroup: '...',
       userID:''
     }
   },
@@ -240,24 +249,38 @@ export const store = new Vuex.Store({
       state.categoryBezpieczenstwo = payload.categoryBezpieczenstwo;
     },
     fetchQuestionsWhenPageRefreshed(state, ongoingExamStructure) {
-        if (!ongoingExamStructure) {
-          console.log("Brak aktywnego egzaminu w db");
-          console.log("Nie nadpisuję więc Vuexowego Store'a !");
-          return
-        }
-
-        console.log('To mój fetch');
-        console.log(ongoingExamStructure);
-        // if (!state.categoryWiedzaOOrganizacji) {
-          state.categoryWiedzaOOrganizacji = ongoingExamStructure.categoryWiedzaOOrganizacji
-        // }
-        // if (!state.categoryWychowanieMetodaMetodyki) {
-          state.categoryWychowanieMetodaMetodyki = ongoingExamStructure.categoryWychowanieMetodaMetodyki
-        // }
-        // if (!state.categoryBezpieczenstwo) {
-          state.categoryBezpieczenstwo = ongoingExamStructure.categoryBezpieczenstwo
-        // }
+      if (!ongoingExamStructure) {
+        console.log("Brak aktywnego egzaminu w db");
+        console.log("Nie nadpisuję więc Vuexowego Store'a !");
+        return
       }
+
+      console.log('To mój fetch');
+      console.log(ongoingExamStructure);
+      // if (!state.categoryWiedzaOOrganizacji) {
+      state.categoryWiedzaOOrganizacji = ongoingExamStructure.categoryWiedzaOOrganizacji
+      // }
+      // if (!state.categoryWychowanieMetodaMetodyki) {
+      state.categoryWychowanieMetodaMetodyki = ongoingExamStructure.categoryWychowanieMetodaMetodyki
+      // }
+      // if (!state.categoryBezpieczenstwo) {
+      state.categoryBezpieczenstwo = ongoingExamStructure.categoryBezpieczenstwo
+      // }
+    },
+    fetchTheFinishedTest(state,fetchedTest){
+      if (fetchedTest.categoryWiedzaOOrganizacji) {
+        state.candidatesAnswers.categoryWiedzaOOrganizacji = fetchedTest.categoryWiedzaOOrganizacji;
+      }
+      if (fetchedTest.categoryWychowanieMetodaMetodyki) {
+        state.candidatesAnswers.categoryWychowanieMetodaMetodyki = fetchedTest.categoryWychowanieMetodaMetodyki;
+      }
+      if (fetchedTest.categoryBezpieczenstwo) {
+        state.candidatesAnswers.categoryBezpieczenstwo = fetchedTest.categoryBezpieczenstwo;
+      }
+      if (fetchedTest.categoryIdeaIHistoria) {
+        state.candidatesAnswers.categoryIdeaIHistoria = fetchedTest.categoryIdeaIHistoria;
+      }
+    }
   },
   actions: {
     initializeCandidate({state}){
@@ -279,12 +302,12 @@ export const store = new Vuex.Store({
         commit('fetchTheCandidatesData', candidate);
       })
       .catch(
-          (error) => {
-            console.log(error);
-          }
-        )
+        (error) => {
+          console.log(error);
+        }
+      )
 
-        console.log('przechodzę przez fetching..');
+      console.log('przechodzę przez fetching..');
     },
     deactivateCurrentCandidate(){
       // IDEA: Once we finish the exam session, we remove the reference of 'currentActiveCandidate' in the Firebase DB as the candidate has just finished the exam session and that reference is no longer needed
@@ -387,6 +410,167 @@ export const store = new Vuex.Store({
         console.log(errorMessage);
         // ...
       });
+    },
+    fetchTheFinishedTest({commit,state,dispatch, getters}){
+      firebase.database()
+      .ref('currentActiveCandidate/userID')
+      .once('value')
+      .then((userIDSnaphot) => {
+        let theId = userIDSnaphot.val();
+        console.log('to jest id kandydata:');
+        console.log(theId);
+
+        if (theId !== '') {
+          console.log("przeszedłem przez condition");
+          firebase.database()
+          .ref('candidatesTestsStack/' + theId)
+          .once('value')
+          .then((fetchedTestSnapshot) => {
+            let fetchedTest = fetchedTestSnapshot.val();
+            console.log("znalazłem test, oto on:");
+            console.log(fetchedTest);
+            commit('fetchTheFinishedTest', fetchedTest);
+          })
+          .catch((e) => {
+            console.log(e);
+          })
+        }
+        else {
+          console.log('ERROR.User ID is null');
+        }
+
+      })
+
+
+
+
+
+    },
+    numberOfCorrectAnswers({state}, whichCatToSumUp) {
+      let totalNum = 0;
+      function sumItUp (category) {
+        let sum = 0;
+        function sumTheShortAnswers (typeOfQuestions){
+          var amount = typeOfQuestions.filter((questionObj) => {
+            return questionObj.correctAnswer == questionObj.whichAnswerChosen && questionObj.whichAnswerChosen != null;
+          })
+          return amount.length;
+        }
+        function sumTheLongAnswers (typeOfQuestions){
+          var amount = typeOfQuestions.filter((questionObj) => {
+            return questionObj.isAnswerCorrect === true;
+          })
+          return amount.length;
+        }
+        if (category.oneChoiceQuestions) {
+          sum += sumTheShortAnswers(category.oneChoiceQuestions);
+        }
+        if (category.videoBasedQuestions) {
+          sum += sumTheShortAnswers(category.videoBasedQuestions);
+        }
+        if (category.imageBasedQuestions) {
+          sum += sumTheLongAnswers(category.imageBasedQuestions)
+        }
+        if (category.textFieldQuestions) {
+          sum += sumTheLongAnswers(category.textFieldQuestions)
+        }
+
+        return sum
+      }
+
+      if (whichCatToSumUp === 'all') {
+        if (state.candidatesAnswers.categoryWiedzaOOrganizacji) {
+          totalNum += sumItUp(state.candidatesAnswers.categoryWiedzaOOrganizacji);
+        }
+        if (state.candidatesAnswers.categoryWychowanieMetodaMetodyki) {
+          totalNum += sumItUp(state.candidatesAnswers.categoryWychowanieMetodaMetodyki);
+        }
+        if (state.candidatesAnswers.categoryBezpieczenstwo) {
+          totalNum += sumItUp(state.candidatesAnswers.categoryBezpieczenstwo);
+        }
+        if (state.candidatesAnswers.categoryIdeaIHistoria) {
+          totalNum += sumItUp(state.candidatesAnswers.categoryIdeaIHistoria);
+        }
+      }
+      else if (whichCatToSumUp === 'firstCat') {
+        if (state.candidatesAnswers.categoryWiedzaOOrganizacji) {
+          totalNum += sumItUp(state.candidatesAnswers.categoryWiedzaOOrganizacji);
+        }
+      }
+      else if (whichCatToSumUp === 'secondCat') {
+        if (state.candidatesAnswers.categoryWychowanieMetodaMetodyki) {
+          totalNum += sumItUp(state.candidatesAnswers.categoryWychowanieMetodaMetodyki);
+        }
+      }
+      else if (whichCatToSumUp === 'thirdCat') {
+        if (state.candidatesAnswers.categoryBezpieczenstwo) {
+          totalNum += sumItUp(state.candidatesAnswers.categoryBezpieczenstwo);
+        }
+      }
+      else if (whichCatToSumUp === 'fourthCat') {
+        if (state.candidatesAnswers.categoryIdeaIHistoria) {
+          totalNum += sumItUp(state.candidatesAnswers.categoryIdeaIHistoria);
+        }
+      }
+      // console.log(`sumuję odpowiedzi z kategorii: ${whichCatToSumUp}`);
+      // console.log(totalNum);
+      return totalNum;
+    },
+    totalNumberOfQuestion({state}, whichCatToSumUp) {
+      let totalNum = 0;
+      function sumItUp (category) {
+        let sum = 0;
+        if (category.oneChoiceQuestions) {
+          sum += category.oneChoiceQuestions.length;
+        }
+        if (category.videoBasedQuestions) {
+          sum += category.videoBasedQuestions.length;
+        }
+        if (category.imageBasedQuestions) {
+          sum += category.imageBasedQuestions.length;
+        }
+        if (category.textFieldQuestions) {
+          sum += category.textFieldQuestions.length;
+        }
+        return sum
+      }
+
+      if (whichCatToSumUp === 'all') {
+        if (state.categoryWiedzaOOrganizacji) {
+          totalNum += sumItUp(state.categoryWiedzaOOrganizacji);
+        }
+        if (state.categoryWychowanieMetodaMetodyki) {
+          totalNum += sumItUp(state.categoryWychowanieMetodaMetodyki);
+        }
+        if (state.categoryBezpieczenstwo) {
+          totalNum += sumItUp(state.categoryBezpieczenstwo);
+        }
+        if (state.categoryIdeaIHistoria) {
+          totalNum += sumItUp(state.categoryIdeaIHistoria);
+        }
+      }
+      else if (whichCatToSumUp === 'firstCat') {
+        if (state.categoryWiedzaOOrganizacji) {
+          totalNum += sumItUp(state.categoryWiedzaOOrganizacji);
+        }
+      }
+      else if (whichCatToSumUp === 'secondCat') {
+        if (state.categoryWychowanieMetodaMetodyki) {
+          totalNum += sumItUp(state.categoryWychowanieMetodaMetodyki);
+        }
+      }
+      else if (whichCatToSumUp === 'thirdCat') {
+        if (state.categoryBezpieczenstwo) {
+          totalNum += sumItUp(state.categoryBezpieczenstwo);
+        }
+      }
+      else if (whichCatToSumUp === 'fourthCat') {
+        if (state.categoryIdeaIHistoria) {
+          totalNum += sumItUp(state.categoryIdeaIHistoria);
+        }
+      }
+
+      return totalNum;
     }
   }
 })

@@ -17,8 +17,8 @@ new Vue({
   store: store,
   router,
   render: h => h(App),
-  created() {
-
+  beforeCreate() {
+    //do something before creating vue instance
     var config = {
     apiKey: "AIzaSyBFmzyLdcH3NLUSTagqkmtCf63tKkxCPCU",
     authDomain: "ksi-test-mechanism.firebaseapp.com",
@@ -29,9 +29,13 @@ new Vue({
     };
     myFirebase  = firebase.initializeApp(config);
 
-    this.$store.dispatch('signUpOnStart', {email: 'example@example.com',
-    password: 'example1'});
-    this.$store.dispatch('fetchTheCandidateData');
+    this.$store.
+    dispatch('signUpOnStart', {email: 'example@example.com',
+    password: 'example1'})
+  },
+  created() {
+    this.$store.dispatch('fetchTheCandidateData')
     this.$store.dispatch('fetchQuestionsWhenPageRefreshed');
+
   }
 })
