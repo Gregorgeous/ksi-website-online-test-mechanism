@@ -8,15 +8,15 @@
         </h5>
       </v-flex>
     </v-layout>
-    <v-layout
-    v-if="correctShortAnswers.length > 0 || wrongShortAnswers.length > 0">
+    <v-layout>
     <v-flex>
       <p class="text-xs-left" style="text-decoration:underline">Pytania zamknięte</p>
       <v-layout row wrap>
-        <v-flex xs12 sm6 v-if="correctShortAnswers.length > 0">
+        <v-flex xs12 sm6>
           <p class="green--text"> Poprawne odpowiedzi</p>
           <v-expansion-panel inset>
-            <v-expansion-panel-content v-for="(questionObj,i) in correctShortAnswers" :key="i">
+            <v-expansion-panel-content v-for="(questionObj,i) in categoryResults.oneChoiceQuestions" :key="i"
+            v-if="questionObj.isAnswerCorrect == true">
               <div slot="header">{{questionObj.question}}</div>
               <v-card>
                 <v-card-text class="grey lighten-3">
@@ -35,7 +35,7 @@
                   </v-layout>
                   <v-container>
                     <v-layout>
-                      {{questionObj.whichAnswerChosen}}
+                      {{questionObj.candidatesAnswer}}
                     </v-layout>
                   </v-container>
                 </v-card-text>
@@ -43,10 +43,11 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-flex>
-        <v-flex xs12 sm6  v-if="wrongShortAnswers.length > 0">
+        <v-flex xs12 sm6 >
           <p class="red--text"> Błędne odpowiedzi</p>
           <v-expansion-panel inset>
-            <v-expansion-panel-content v-for="(questionObj,i) in wrongShortAnswers" :key="i">
+            <v-expansion-panel-content v-for="(questionObj,i) in categoryResults.oneChoiceQuestions" :key="i"
+            v-if="questionObj.isAnswerCorrect == false">
               <div slot="header">{{questionObj.question}}</div>
               <v-card>
                 <v-card-text class="grey lighten-3">
@@ -65,7 +66,7 @@
                   </v-layout>
                   <v-container>
                     <v-layout>
-                      {{questionObj.whichAnswerChosen}}
+                      {{questionObj.candidatesAnswer}}
                     </v-layout>
                   </v-container>
                   <v-divider></v-divider>
@@ -74,7 +75,7 @@
                   </v-layout>
                   <v-container>
                     <v-layout>
-                      {{questionObj.correctAnswer}}
+                      w db nie masz wlasnosci correctAnswer..
                     </v-layout>
                   </v-container>
                 </v-card-text>
