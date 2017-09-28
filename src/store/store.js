@@ -159,9 +159,9 @@ export const store = new Vuex.Store({
       },
     },
     candidateDetails: {
-      firstName: '...',
-      lastName: '...',
-      scoutGroup: '...',
+      firstName: '',
+      lastName: '',
+      scoutGroup: '',
       userID:''
     }
   },
@@ -293,13 +293,18 @@ export const store = new Vuex.Store({
       firebase.database().ref('currentActiveCandidate').once('value')
       .then((data) => {
         const object = data.val();
-        const candidate = {
-          firstName: object.firstName,
-          lastName: object.lastName,
-          scoutGroup: object.scoutGroup,
-          userID: object.userID
-        };
-        commit('fetchTheCandidatesData', candidate);
+        if (object) {
+          const candidate = {
+            firstName: object.firstName,
+            lastName: object.lastName,
+            scoutGroup: object.scoutGroup,
+            userID: object.userID
+          };
+          commit('fetchTheCandidatesData', candidate);
+        }
+        else {
+          console.log("Brak aktywnego kandydata");
+        }
       })
       .catch(
         (error) => {
@@ -356,6 +361,26 @@ export const store = new Vuex.Store({
 
         commit('CreateNewExamQuestionStack', randomisedQuestionStack );
       })
+    },
+    updateCurrentExamAnswers({state}, whichCat) {
+      // IDEA: whenever user clicks "save answers in this category (in PL: 'zapisz odpowiedzi z tej kategorii') we want to update the 'currentActiveExamStructure' node in firebase db with the answers (thus we send whole current state of each of the vuex question categories states - they contain the answer parameter thanks to dynamic v-model binding)  ... So that when the user refreshes the page (which automatically triggers the fetching of the current exam from db) the fetched questions cointain the answers given by the user before refreshing"
+      if (whichCat == 'categoryWiedzaOOrganizacji') {
+        var stateCat = state.categoryWiedzaOOrganizacji;
+        firebase.database().ref('currentActiveExamStructure/' + whichCat).set(stateCat);
+      }
+      else if (whichCat == 'categoryWychowanieMetodaMetodyki') {
+        var stateCat = state.categoryWychowanieMetodaMetodyki;
+        firebase.database().ref('currentActiveExamStructure/' + whichCat).set(stateCat);
+      }
+      else if (whichCat == 'categoryBezpieczenstwo') {
+        var stateCat = state.categoryBezpieczenstwo;
+        firebase.database().ref('currentActiveExamStructure/' + whichCat).set(stateCat);
+      }
+      else if (whichCat == 'categoryIdeaIHistoria') {
+        console.log("FOR NOW I DO NOTHING FOR THIS CATEGORY - ONCE KSI PROVIDES QUESTIONS FOR THIS CAT, YOU'LL NEED TO UPDATE ME");
+        // var stateCat = state.categoryIdeaIHistoria;
+        // firebase.database().ref('currentActiveExamStructure/' + whichCat).set(stateCat);
+      }
     },
     fetchQuestionsWhenPageRefreshed({commit}){
       firebase.database()

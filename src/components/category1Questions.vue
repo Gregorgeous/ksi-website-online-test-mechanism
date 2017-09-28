@@ -1,7 +1,7 @@
 <template>
   <div id="cat1QuestionsStack">
 
-    <v-layout
+  <v-layout
     class="mt-4"
     v-for="(oCQuestion, index) in categoryWiedzaOOrganizacji.oneChoiceQuestions"
     :key="index">
@@ -54,10 +54,10 @@
 </v-layout>
 
 <v-layout
-class="mt-4"
-v-for="(mCQuestion, index) in categoryWiedzaOOrganizacji.multiChoiceQuestions"
-:key="index">
-<v-flex>
+  class="mt-4"
+  v-for="(mCQuestion, index) in categoryWiedzaOOrganizacji.multiChoiceQuestions"
+  :key="index">
+  <v-flex>
   <v-card hover>
     <v-card-text primary-title>
       <v-layout>
@@ -92,7 +92,7 @@ v-for="(mCQuestion, index) in categoryWiedzaOOrganizacji.multiChoiceQuestions"
         :value= 'falseAnswer'>
       </v-checkbox>
 
-      </v-flex>
+    </v-flex>
 
   </v-layout>
 
@@ -253,12 +253,6 @@ export default {
   name: "cat1Questions",
   data () {
     return {
-      categoryWiedzaOOrganizacjiAnswers: {
-        oneChoiceQuestions: [] ,
-        videoBasedQuestions: [] ,
-        imageBasedQuestions: [] ,
-        textFieldQuestions: []
-      }
     }
   },
   computed: {
@@ -289,45 +283,63 @@ export default {
         imageBasedQuestions: [] ,
         textFieldQuestions: []
       };
-      for (var i = 0; i < this.oneChoiceQuestions.length; i++) {
-        let dataFormattedObject = {
-          question: this.oneChoiceQuestions[i].question,
-          candidatesAnswer: this.oneChoiceQuestions[i].whichAnswerChosen,
-          isAnswerCorrect: null
+      if (this.oneChoiceQuestions) {
+        for (var i = 0; i < this.oneChoiceQuestions.length; i++) {
+          let dataFormattedObject = {
+            question: this.oneChoiceQuestions[i].question,
+            candidatesAnswer: this.oneChoiceQuestions[i].whichAnswerChosen,
+            correctAnswer: this.oneChoiceQuestions[i].correctAnswer,
+            isAnswerCorrect: null
+          }
+          categoryWiedzaOOrganizacjiAnswers.oneChoiceQuestions.push(dataFormattedObject);
         }
-        categoryWiedzaOOrganizacjiAnswers.oneChoiceQuestions.push(dataFormattedObject);
       }
 
-      for (i = 0; i < this.videoBasedQuestions.length; i++) {
-        let dataFormattedObject = {
-          question: this.videoBasedQuestions[i].question,
-          candidatesAnswer: this.videoBasedQuestions[i].whichAnswerChosen,
-          isAnswerCorrect: null
+      if (this.videoBasedQuestions) {
+        for (i = 0; i < this.videoBasedQuestions.length; i++) {
+          let dataFormattedObject = {
+            question: this.videoBasedQuestions[i].question,
+            candidatesAnswer: this.videoBasedQuestions[i].whichAnswerChosen,
+            isAnswerCorrect: null
+          }
+          categoryWiedzaOOrganizacjiAnswers.videoBasedQuestions.push(dataFormattedObject);
         }
-        categoryWiedzaOOrganizacjiAnswers.videoBasedQuestions.push(dataFormattedObject);
       }
 
-      for (i = 0; i < this.imageBasedQuestions.length; i++) {
-        let dataFormattedObject = {
-          question: this.imageBasedQuestions[i].question,
-          candidatesAnswer: this.imageBasedQuestions[i].candidatesAnswer,
-          isAnswerCorrect: null
+      if (this.imageBasedQuestions) {
+        for (i = 0; i < this.imageBasedQuestions.length; i++) {
+          let dataFormattedObject = {
+            question: this.imageBasedQuestions[i].question,
+            candidatesAnswer: this.imageBasedQuestions[i].candidatesAnswer,
+            isAnswerCorrect: null
+          }
+          categoryWiedzaOOrganizacjiAnswers.imageBasedQuestions.push(dataFormattedObject);
         }
-        categoryWiedzaOOrganizacjiAnswers.imageBasedQuestions.push(dataFormattedObject);
       }
 
-      for (i = 0; i < this.textFieldQuestions.length; i++) {
-        let dataFormattedObject = {
-          question: this.textFieldQuestions[i].question,
-          candidatesAnswer: this.textFieldQuestions[i].candidatesAnswer,
-          isAnswerCorrect: null
+      if (this.textFieldQuestions) {
+        for (i = 0; i < this.textFieldQuestions.length; i++) {
+          let dataFormattedObject = {
+            question: this.textFieldQuestions[i].question,
+            candidatesAnswer: this.textFieldQuestions[i].candidatesAnswer,
+            isAnswerCorrect: null
+          }
+          categoryWiedzaOOrganizacjiAnswers.textFieldQuestions.push(dataFormattedObject);
         }
-        categoryWiedzaOOrganizacjiAnswers.textFieldQuestions.push(dataFormattedObject);
       }
 
+      console.log("Dispatchuję 'updateCurrentExamAnswers'");
+      this.$store.dispatch('updateCurrentExamAnswers','categoryWiedzaOOrganizacji')
+      console.log("------------Jeszcze w komponencie -------------");
+      console.log("to są wszystkie odpowiedzi które chce zapisac z tej kategorii");
       console.log(categoryWiedzaOOrganizacjiAnswers);
       this.$store.commit('mapTheFirstCategoryAnswers', categoryWiedzaOOrganizacjiAnswers)
     }
+  },
+  updated() {
+    //do something after updating vue instance
+    // console.log("Jestem sobie updated ! ;D ");
+
   }
 }
 </script>
