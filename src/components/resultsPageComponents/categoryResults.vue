@@ -11,8 +11,8 @@
     <v-layout>
       <v-flex>
         <p class="text-xs-left" style="text-decoration:underline">Pytania zamknięte</p>
-        <v-layout row wrap>
-          <v-flex v-if="categoryResults.oneChoiceQuestions" xs12 sm6>
+        <v-layout row wrap v-if="categoryResults.oneChoiceQuestions" >
+          <v-flex xs12 sm6 v-if="categoryResults.oneChoiceQuestions.length > 0 ">
             <p class="green--text"> Poprawne odpowiedzi</p>
             <v-expansion-panel inset>
               <v-expansion-panel-content v-for="(questionObj,i) in categoryResults.oneChoiceQuestions" :key="i"
@@ -43,10 +43,7 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-flex>
-        <v-flex v-else xs12 sm6>
-          <p>Brak pytań zamkniętych w tej kategorii</p>
-        </v-flex>
-        <v-flex xs12 sm6 >
+        <v-flex xs12 sm6 v-if="categoryResults.oneChoiceQuestions.length > 0 ">
           <p class="red--text"> Błędne odpowiedzi</p>
           <v-expansion-panel inset>
             <v-expansion-panel-content v-for="(questionObj,i) in categoryResults.oneChoiceQuestions" :key="i"
@@ -86,6 +83,11 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-flex>
+    </v-layout>
+    <v-layout v-else>
+      <v-flex>
+      <p>Brak pytań zamkniętych w tej kategorii</p>
+    </v-flex>
     </v-layout>
   </v-flex>
 </v-layout>
