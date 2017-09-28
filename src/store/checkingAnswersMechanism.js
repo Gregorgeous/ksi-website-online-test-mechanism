@@ -1,6 +1,7 @@
 var checkOneChoiceQuestionsAnswers = (state, catOfQuestions, thisCatCandAnswers) => {
 
-  if (thisCatCandAnswers.oneChoiceQuestions.length > 0 ) {
+
+  if (thisCatCandAnswers.oneChoiceQuestions.length > 0 && catOfQuestions.oneChoiceQuestions) {
     for (var i = 0; i < catOfQuestions.oneChoiceQuestions.length; i++) {
       for (var j = 0; j < thisCatCandAnswers.oneChoiceQuestions.length; j++) {
         if (thisCatCandAnswers.oneChoiceQuestions[j].question === catOfQuestions.oneChoiceQuestions[i].question){
@@ -17,11 +18,12 @@ var checkOneChoiceQuestionsAnswers = (state, catOfQuestions, thisCatCandAnswers)
       }
     }
   }
+
 }
 
 var checkVideoBasedQuestionsAnswers = (state, catOfQuestions, thisCatCandAnswers) => {
 
-  if (thisCatCandAnswers.videoBasedQuestions.length > 0 ) {
+  if (thisCatCandAnswers.videoBasedQuestions.length > 0 && catOfQuestions.videoBasedQuestions) {
     for (var i = 0; i < catOfQuestions.videoBasedQuestions.length; i++) {
       for (var j = 0; j < thisCatCandAnswers.videoBasedQuestions.length; j++) {
         if (thisCatCandAnswers.videoBasedQuestions[j].question === catOfQuestions.videoBasedQuestions[i].question){

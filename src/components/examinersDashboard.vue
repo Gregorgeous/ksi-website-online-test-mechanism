@@ -1,132 +1,165 @@
 <template>
   <div>
+
     <v-toolbar extended class="cyan" dark>
       <v-toolbar-title slot="extension" class="display-2 ">
         Panel sprawdzającego
       </v-toolbar-title>
     </v-toolbar>
 
-    <v-container>
-      <v-layout>
-        <v-flex xs12>
-          <h3 class="pt-2">Wyniki w pytaniach jednokrotnego wyboru</h3>
-        </v-flex>
-      </v-layout>
-
-      <v-flex xs12 sm10 offset-sm1>
-        <v-card >
-          <v-card-text>
-            <v-layout class="my-1">
-              <v-flex xs12 md6>
-                <h4>Liczba poprawnych odpowiedzi </h4>
-              </v-flex>
-              <v-flex xs12 md6>
-                <h4> ...  z  ...</h4>
-              </v-flex>
-            </v-layout>
-          </v-card-text>
+    <!--  TEMP: this is temporary solution for the case when  user refreshes tne page during the grading process     -->
+    <div v-if="refreshedDuringGrading">
+      <v-dialog v-model="refreshedDuringGrading" lazy absolute>
+        <v-card>
+          <v-card-title>
+            <div class="headline">BŁĄD! Odświeżyłeś stronę w czasie sprawdzania egzaminu</div>
+          </v-card-title>
+          <v-card-text>Aby kontynuować, należy cofnąć do poprzedniego widoku a następnie ponownie kliknąć "zakończ test" </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn class="green--text darken-1" flat="flat" @click="refreshedDuringGrading = false">zamknij</v-btn>
+            <!--FIXME: remember to change  refreshedDuringGrading to "dialog" here and on the top. -->
+          </v-card-actions>
         </v-card>
-      </v-flex>
+      </v-dialog>
+    </div>
 
-      <v-layout>
-        <v-flex xs12>
-          <h3 class="pt-5">Wyniki w pytaniach wielokrotnego wyboru</h3>
-        </v-flex>
-      </v-layout>
+    <div v-else>
+      <v-container>
+        <v-layout>
+          <v-flex xs12>
+            <h3 class="pt-2">Wyniki w pytaniach jednokrotnego wyboru</h3>
+          </v-flex>
+        </v-layout>
 
-      <v-flex xs12 sm10 offset-sm1>
-        <v-card >
-          <v-card-text>
-            <v-layout class="my-1">
-              <v-flex xs12 md6>
-                <h4>Liczba poprawnych odpowiedzi </h4>
-              </v-flex>
-              <v-flex xs12 md6>
-                <h4> ...  z  ...</h4>
-              </v-flex>
-            </v-layout>
-          </v-card-text>
-        </v-card>
-      </v-flex>
-
-      <hr class="mt-4">
-      <v-divider></v-divider>
-      <hr>
-
-      <h3 class="mt-4"> Sprawdź poprawność pytań otwartych</h3>
-
-      <v-expansion-panel expand>
-        <v-expansion-panel-content v-for="(category,key, index) in expansionPanels" :key="key">
-          <div slot="header">{{category[0].categoryTitle}}</div>
-
-          <v-layout
-          class="mt-4"
-          v-if="category.length == 1">
-            <v-flex>
-              <v-card>
-                <v-card-title class="justify-center text-xs-center">
-                <h4 class="text-xs-center">W tym teście nie było pytań opisowych dla danej kategorii</h4>
-              </v-card-title>
-              </v-card>
-            </v-flex>
-          </v-layout>
-
-          <v-layout
-          class="mt-4 "
-          v-for="(tFQuestion,index) in category"
-          :key="index"
-          v-if="tFQuestion.question != undefined">
-          <v-flex >
-            <v-card
-            hover
-            :class= "comProp(tFQuestion)"
-            class=" white--text"
-            :ref='key' >
-            <v-card-text primary-title class="pb-0">
-              <v-layout row>
-                <v-flex>
-                  <h5>
-                    Pytanie: {{tFQuestion.question}}
-                  </h5>
+        <v-flex xs12 sm10 offset-sm1>
+          <v-card >
+            <v-card-text>
+              <v-layout class="my-1">
+                <v-flex xs12 md6>
+                  <h4>Liczba poprawnych odpowiedzi </h4>
+                </v-flex>
+                <v-flex xs12 md6>
+                  <h4>
+                    {{oneChoiceQuestionsResults}}  z  {{oneChoiceQuestionsTotalNum}}
+                  </h4>
                 </v-flex>
               </v-layout>
-              <v-divider></v-divider>
-              <v-text-field
-              :name="index"
-              label="Tak odpowiedział kandydat:"
-              textarea
-              disabled
-              dark
-              v-model="tFQuestion.candidatesAnswer"
-              ></v-text-field>
             </v-card-text>
-            <v-card-actions>
-              <v-layout row wrap justify-space-between>
-                <v-flex class="text-xs-center" >
-                  <v-btn  class="elevation-8 red accent-2 white--text" round @click="makeAnswerWrong(tFQuestion)" >
-                    Zła odpowiedź
-                    <v-icon right medium dark >thumb_down</v-icon>
-                  </v-btn>
-                </v-flex>
-                <v-flex class="text-xs-center">
-                  <v-btn class="elevation-8 accent-3 " round @click="makeAnswerNull(tFQuestion)">
-                    Trudno ocenić..
-                    <v-icon right medium dark >thumbs_up_down</v-icon>
-                  </v-btn>
-                </v-flex>
-                <v-flex class="text-xs-center">
-                  <v-btn class="elevation-8 light-green accent-3 white--text" round @click="makeAnswerCorrect(tFQuestion)">
-                    dobra odpowiedź
-                    <v-icon right medium dark >thumb_up</v-icon>
-                  </v-btn>
-                </v-flex>
-              </v-layout>
-            </v-card-actions>
           </v-card>
         </v-flex>
+
+        <!--  FOR NOW THERE'S NO MULTI-CHOICE QUESTIONS SUPPORT -->
+        <!-- <v-layout>
+        <v-flex xs12>
+        <h3 class="pt-5">Wyniki w pytaniach wielokrotnego wyboru</h3>
+      </v-flex>
+    </v-layout>
+
+    <v-flex xs12 sm10 offset-sm1>
+    <v-card >
+    <v-card-text>
+    <v-layout class="my-1">
+    <v-flex xs12 md6>
+    <h4>Liczba poprawnych odpowiedzi </h4>
+  </v-flex>
+  <v-flex xs12 md6>
+  <h4> ...  z  ...</h4>
+</v-flex>
+</v-layout>
+</v-card-text>
+</v-card>
+</v-flex>
+
+<hr class="mt-4">
+<v-divider></v-divider>
+<hr> -->
+
+<h3 class="mt-4"> Sprawdź poprawność pytań otwartych</h3>
+
+<v-expansion-panel expand>
+  <v-expansion-panel-content v-for="(category,key, index) in expansionPanels" :key="key">
+    <div slot="header">{{category[0].categoryTitle}}</div>
+
+    <v-layout
+    class="mt-4"
+    v-if="category.length == 1">
+    <v-flex>
+      <v-card>
+        <v-card-title class="justify-center text-xs-center">
+          <h4 class="text-xs-center">W tym teście nie było pytań opisowych dla danej kategorii</h4>
+        </v-card-title>
+      </v-card>
+    </v-flex>
+  </v-layout>
+
+  <v-layout
+  class="mt-4 "
+  v-for="(tFQuestion,index) in category"
+  :key="index"
+  v-if="tFQuestion.question != undefined">
+  <v-flex >
+    <v-card
+    hover
+    :class= "comProp(tFQuestion)"
+    class=" white--text"
+    :ref='key' >
+    <v-card-text primary-title class="pb-0">
+      <v-layout row v-if="tFQuestion.imageURL">
+        <v-flex>
+          <iframe
+          class="text-xs-center"
+          id="testImage"
+          :src="tFQuestion.imageURL"
+          width="100%"
+          height="400px">
+        </iframe>
+      </v-flex>
+    </v-layout>
+      <v-layout row>
+        <v-flex>
+          <h5>
+            Pytanie: {{tFQuestion.question}}
+          </h5>
+        </v-flex>
       </v-layout>
-    </v-expansion-panel-content>
-  </v-expansion-panel>
+      <v-divider></v-divider>
+      <v-text-field
+      :name="index"
+      label="Tak odpowiedział kandydat:"
+      textarea
+      disabled
+      dark
+      v-model="tFQuestion.candidatesAnswer"
+      ></v-text-field>
+    </v-card-text>
+    <v-card-actions>
+      <v-layout row wrap justify-space-between>
+        <v-flex class="text-xs-center" >
+          <v-btn  class="elevation-8 red accent-2 white--text" round @click="makeAnswerWrong(tFQuestion)" >
+            Zła odpowiedź
+            <v-icon right medium dark >thumb_down</v-icon>
+          </v-btn>
+        </v-flex>
+        <v-flex class="text-xs-center">
+          <v-btn class="elevation-8 accent-3 " round @click="makeAnswerNull(tFQuestion)">
+            Trudno ocenić..
+            <v-icon right medium dark >thumbs_up_down</v-icon>
+          </v-btn>
+        </v-flex>
+        <v-flex class="text-xs-center">
+          <v-btn class="elevation-8 light-green accent-3 white--text" round @click="makeAnswerCorrect(tFQuestion)">
+            dobra odpowiedź
+            <v-icon right medium dark >thumb_up</v-icon>
+          </v-btn>
+        </v-flex>
+      </v-layout>
+    </v-card-actions>
+  </v-card>
+</v-flex>
+</v-layout>
+</v-expansion-panel-content>
+</v-expansion-panel>
 </v-container>
 <v-container>
   <v-flex>
@@ -135,16 +168,15 @@
     </v-btn>
   </v-flex>
 </v-container>
-
+</div>
 <v-snackbar
-      :timeout="timeout"
-      top='top'
-      v-model="snackbar"
-    >
-      Sprawdzono test !
-      <v-btn flat class="pink--text" @click.native="snackbar = false">Close</v-btn>
-    </v-snackbar>
-
+:timeout="timeout"
+top='top'
+v-model="snackbar"
+>
+Sprawdzono test !
+<v-btn flat class="pink--text" @click.native="snackbar = false">Close</v-btn>
+</v-snackbar>
 </div>
 </template>
 
@@ -154,6 +186,8 @@ export default {
   data () {
     return {
       snackbar: false,
+      refreshedDuringGrading:false,
+      dialog: false,
       timeout:2000,
       expansionPanels: {
         categoryWiedzaOOrganizacji: [
@@ -172,6 +206,9 @@ export default {
     }
   },
   methods: {
+    logging (){
+      console.log(this.refreshedDuringGrading);
+    },
     makeAnswerWrong(candsAnswer) {
       candsAnswer.isAnswerCorrect = false;
       console.log(candsAnswer);
@@ -200,11 +237,13 @@ export default {
     },
     finishGradingTheTest () {
       this.snackbar = true;
-      // BELOW is only for updating view in Vue dev panel
-      this.$store.commit('gradeTFQuestions');
       this.$store.dispatch('uploadCandsAnswersToDb');
       this.$store.dispatch('deactivateCurrentExamVersion');
-      this.$router.push('/results-page');
+      setTimeout(() =>{
+        this.$router.push('/results-page');
+      }, 2500);
+      // BELOW is only for updating view in Vue dev panel
+      this.$store.commit('gradeTFQuestions');
     }
   },
   computed: {
@@ -220,6 +259,12 @@ export default {
     candidatesAnswersInCategoryIdeaIHhistoria () {
       return this.$store.state.candidatesAnswers.categoryIdeaIHistoria;
     },
+    oneChoiceQuestionsResults (){
+      return this.$store.getters.forExaminersDashboard1;
+    },
+    oneChoiceQuestionsTotalNum (){
+      return this.$store.getters.forExaminersDashboard2;
+    }
   },
   created() {
     //do something after creating vue instance
@@ -228,37 +273,74 @@ export default {
     //   this.numberOfRightAnswers = this.$store.getters.displayRightAnswersOnResultsPage;
     // }
 
+    // TEMP: this is temporary solution for case when the user refreshes test during the grading process..
+    // NOTE: I presume here that if the first category of Qs is nullable, it means that the page is refreshed (rember, we're in the created lifecycle hook when the data from firebase isn't able to be fetched yet )
+    function isEmpty(obj) {
+      for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+        return false;
+      }
+      return true;
+    }
+    if (isEmpty(this.$store.state.categoryWiedzaOOrganizacji)) {
+
+      this.refreshedDuringGrading = true;
+      this.dialog = true;
+    }
+
     this.$store.dispatch("fetchTheCandidateData");
 
     // NOTE: Below we "attach" all the text field answers from all the categories of questions to the "expansionPanels" variable - so that it displays in a way it does on the website right now using expansion Panel Vuetify UI component
     var cat1TextFieldAnswers = this.candidatesAnswersInCategoryWiedzaOOrganizacji.textFieldQuestions;
 
+    var cat1ImageBasedAnswers =
+    this.candidatesAnswersInCategoryWiedzaOOrganizacji.imageBasedQuestions;
+
     cat1TextFieldAnswers.forEach(object => {
+      this.expansionPanels.categoryWiedzaOOrganizacji.push(object);
+    })
+    cat1ImageBasedAnswers.forEach(object => {
       this.expansionPanels.categoryWiedzaOOrganizacji.push(object);
     })
     // console.log(this.expansionPanels.categoryWiedzaOOrganizacji);
 
 
     var cat2TextFieldAnswers = this.candidatesAnswersInCategoryWychowanieMetodaMetodyki.textFieldQuestions;
-
+    var cat2ImageBasedAnswers =
+    this.candidatesAnswersInCategoryWychowanieMetodaMetodyki.imageBasedQuestions;
     cat2TextFieldAnswers.forEach(object => {
       this.expansionPanels.categoryWychowanieMetodaMetodyki.push(object);
     })
     // console.log(this.expansionPanels.categoryWychowanieMetodaMetodyki);
+    cat2ImageBasedAnswers.forEach(object => {
+      this.expansionPanels.categoryWychowanieMetodaMetodyki.push(object);
+    })
 
     var cat3TextFieldAnswers = this.candidatesAnswersInCategoryBezpieczenstwo.textFieldQuestions;
 
+    var cat3ImageBasedAnswers = this.candidatesAnswersInCategoryBezpieczenstwo.imageBasedQuestions;
+
     cat3TextFieldAnswers.forEach(object => {
+      this.expansionPanels.categoryBezpieczenstwo.push(object);
+    })
+    cat3ImageBasedAnswers.forEach(object => {
       this.expansionPanels.categoryBezpieczenstwo.push(object);
     })
     // console.log(this.expansionPanels.categoryBezpieczenstwo);
 
     var cat4TextFieldAnswers = this.candidatesAnswersInCategoryIdeaIHhistoria.textFieldQuestions;
+    var cat4ImageBasedAnswers = this.candidatesAnswersInCategoryIdeaIHhistoria.imageBasedQuestions;
 
     cat4TextFieldAnswers.forEach(object => {
       this.expansionPanels.categoryIdeaIHistoria.push(object);
     })
+    cat4ImageBasedAnswers.forEach(object => {
+      this.expansionPanels.categoryIdeaIHistoria.push(object);
+    })
     // console.log(this.expansionPanels.categoryIdeaIHistoria);
+
+
+
   }
 }
 </script>

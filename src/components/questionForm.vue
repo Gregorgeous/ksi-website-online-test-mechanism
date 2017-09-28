@@ -49,6 +49,7 @@
            <v-layout wrap>
              <v-flex xs12>
                <p>Czy chcesz już na pewno zakończyć test ?</p>
+               <p>UWAGA! Jeśli w czasie testu odświeżałeś/aś stronę - przed zakończeniem zapisz jeszcze raz swoje odpowiedzi w KAŻDEJ kategorii pytań (klikając czarne przyciski "zapisz odpowiedzi z tej kategorii") </p>
              </v-flex>
            </v-layout>
       </v-card-text>
@@ -64,6 +65,8 @@
   <!-- <div class="text-xs-center">
       <v-pagination :length="4" v-model="page" circle></v-pagination>
   </div> -->
+
+
 
   </v-container>
 </template>

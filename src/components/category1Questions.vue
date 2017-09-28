@@ -246,6 +246,15 @@ v-for="(tFQuestion, index) in categoryWiedzaOOrganizacji.textFieldQuestions"
     </v-btn>
   </v-flex>
 </v-layout>
+
+<v-snackbar
+  :timeout="timeout"
+  top='top'
+  v-model="snackbar">
+    Zapisano odpowiedzi z tego działu!
+    <v-btn flat class="pink--text" @click.native="snackbar = false">Close</v-btn>
+</v-snackbar>
+
 </div>
 </template>
 <script>
@@ -253,6 +262,8 @@ export default {
   name: "cat1Questions",
   data () {
     return {
+      snackbar: false,
+      timeout:1300
     }
   },
   computed: {
@@ -311,7 +322,8 @@ export default {
           let dataFormattedObject = {
             question: this.imageBasedQuestions[i].question,
             candidatesAnswer: this.imageBasedQuestions[i].candidatesAnswer,
-            isAnswerCorrect: null
+            isAnswerCorrect: null,
+            imageURL:this.imageBasedQuestions[i].imageURL
           }
           categoryWiedzaOOrganizacjiAnswers.imageBasedQuestions.push(dataFormattedObject);
         }
@@ -333,7 +345,8 @@ export default {
       console.log("------------Jeszcze w komponencie -------------");
       console.log("to są wszystkie odpowiedzi które chce zapisac z tej kategorii");
       console.log(categoryWiedzaOOrganizacjiAnswers);
-      this.$store.commit('mapTheFirstCategoryAnswers', categoryWiedzaOOrganizacjiAnswers)
+      this.$store.commit('mapTheFirstCategoryAnswers', categoryWiedzaOOrganizacjiAnswers);
+      this.snackbar = true;
     }
   },
   updated() {

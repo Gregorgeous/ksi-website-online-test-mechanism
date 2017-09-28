@@ -27,7 +27,7 @@ new Vue({
     storageBucket: "ksi-test-mechanism.appspot.com",
     messagingSenderId: "1066220391714"
     };
-    myFirebase  = firebase.initializeApp(config);
+    myFirebase  = firebase.initializeApp(config)
 
     this.$store.
     dispatch('signUpOnStart', {email: 'example@example.com',

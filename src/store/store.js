@@ -9,6 +9,8 @@ Vue.use(Vuex);
 
 export const store = new Vuex.Store({
   state: {
+    fatalError: false,
+    refreshedDuringGrading: false,
     count: 1,
     categoryWiedzaOOrganizacji:{},
     categoryWychowanieMetodaMetodyki:{},
@@ -59,7 +61,7 @@ export const store = new Vuex.Store({
           },
           {
             candidatesAnswer: 'brak odpowiedzi',
-            isAnswerCorrect: true,
+            isAnswerCorrect: null,
             question: 'Błąd: to pytanie powinno się pojawić tylko gdy użytkownik nie zapisze swoich pytań w tej kategorii'
           }
         ]
@@ -163,6 +165,50 @@ export const store = new Vuex.Store({
       lastName: '',
       scoutGroup: '',
       userID:''
+    }
+  },
+  getters: {
+    forExaminersDashboard1(state) {
+      let counter = 0;
+      function countUpEachCat (category){
+        if (category.oneChoiceQuestions) {
+          category.oneChoiceQuestions.forEach((questionObj)=>{
+            if (questionObj.whichAnswerChosen == questionObj.correctAnswer) {
+              counter++;
+            }
+          })
+        }
+      }
+      // NOTE: we only check for the first one, if the first is empty the rest will surely be as well (it means that the data has failed to be fetched from db)
+      if (state.categoryWiedzaOOrganizacji != null) {
+        countUpEachCat(state.categoryWiedzaOOrganizacji);
+        countUpEachCat(state.categoryWychowanieMetodaMetodyki);
+        countUpEachCat(state.categoryBezpieczenstwo);
+        countUpEachCat(state.categoryIdeaIHistoria);
+      }
+      console.log("-------jestem w getters:forExaminersDashboard1: --------");
+      console.log('Tyle policzyłem poprawnych odp. jedn. wyboru');
+      console.log(counter);
+      return counter;
+    },
+    forExaminersDashboard2(state){
+      let TotalNum = 0;
+      if (state.categoryWiedzaOOrganizacji == null) {
+        return 0;
+      }
+      if (state.categoryWiedzaOOrganizacji.oneChoiceQuestions) {
+        TotalNum += state.categoryWiedzaOOrganizacji.oneChoiceQuestions.length;
+      }
+      if (state.categoryWychowanieMetodaMetodyki.oneChoiceQuestions) {
+        TotalNum += state.categoryWychowanieMetodaMetodyki.oneChoiceQuestions.length;
+      }
+      if (state.categoryBezpieczenstwo.oneChoiceQuestions) {
+        TotalNum += state.categoryBezpieczenstwo.oneChoiceQuestions.length;
+      }
+      if (state.categoryIdeaIHistoria.oneChoiceQuestions) {
+        TotalNum += state.categoryIdeaIHistoria.oneChoiceQuestions.length;
+      }
+      return TotalNum;
     }
   },
   mutations: {
@@ -280,6 +326,16 @@ export const store = new Vuex.Store({
       if (fetchedTest.categoryIdeaIHistoria) {
         state.candidatesAnswers.categoryIdeaIHistoria = fetchedTest.categoryIdeaIHistoria;
       }
+    },
+    endTheExam(state){
+      state.candidateDetails.firstName = '';
+      state.candidateDetails.lastName = '';
+      state.candidateDetails.scoutGroup = '';
+      state.candidateDetails.userID = '';
+      state.categoryWiedzaOOrganizacji = {};
+      state.categoryWychowanieMetodaMetodyki = {};
+      state.categoryBezpieczenstwo = {};
+      state.categoryIdeaIHistoria = {};
     }
   },
   actions: {
@@ -362,6 +418,20 @@ export const store = new Vuex.Store({
         commit('CreateNewExamQuestionStack', randomisedQuestionStack );
       })
     },
+    fetchQuestionsWhenPageRefreshed({commit}){
+      firebase.database()
+      .ref('currentActiveExamStructure')
+      .once('value')
+      .then((data) => {
+        let ongoingExamStructure = data.val();
+        commit('fetchQuestionsWhenPageRefreshed',ongoingExamStructure);
+      })
+    },
+    uploadActiveVerOfExamToDb({state, commit}, currentExamStructure) {
+      firebase.database()
+      .ref('currentActiveExamStructure')
+      .set(currentExamStructure);
+    },
     updateCurrentExamAnswers({state}, whichCat) {
       // IDEA: whenever user clicks "save answers in this category (in PL: 'zapisz odpowiedzi z tej kategorii') we want to update the 'currentActiveExamStructure' node in firebase db with the answers (thus we send whole current state of each of the vuex question categories states - they contain the answer parameter thanks to dynamic v-model binding)  ... So that when the user refreshes the page (which automatically triggers the fetching of the current exam from db) the fetched questions cointain the answers given by the user before refreshing"
       if (whichCat == 'categoryWiedzaOOrganizacji') {
@@ -381,20 +451,6 @@ export const store = new Vuex.Store({
         // var stateCat = state.categoryIdeaIHistoria;
         // firebase.database().ref('currentActiveExamStructure/' + whichCat).set(stateCat);
       }
-    },
-    fetchQuestionsWhenPageRefreshed({commit}){
-      firebase.database()
-      .ref('currentActiveExamStructure')
-      .once('value')
-      .then((data) => {
-        let ongoingExamStructure = data.val();
-        commit('fetchQuestionsWhenPageRefreshed',ongoingExamStructure);
-      })
-    },
-    uploadActiveVerOfExamToDb({state, commit}, currentExamStructure) {
-      firebase.database()
-      .ref('currentActiveExamStructure')
-      .set(currentExamStructure);
     },
     deactivateCurrentExamVersion(){
       firebase.database().ref('currentActiveExamStructure').remove();
@@ -475,29 +531,30 @@ export const store = new Vuex.Store({
       let totalNum = 0;
       function sumItUp (category) {
         let sum = 0;
-        function sumTheShortAnswers (typeOfQuestions){
-          var amount = typeOfQuestions.filter((questionObj) => {
-            return questionObj.correctAnswer == questionObj.whichAnswerChosen && questionObj.whichAnswerChosen != null;
-          })
-          return amount.length;
-        }
-        function sumTheLongAnswers (typeOfQuestions){
+        // NOTE: this was older approach when I didn't realise my short answer questions will also have isAnswerCorrect parameter
+        // function sumTheShortAnswers (typeOfQuestions){
+        //   var amount = typeOfQuestions.filter((questionObj) => {
+        //     return questionObj.correctAnswer == questionObj.whichAnswerChosen && questionObj.whichAnswerChosen != null;
+        //   })
+        //   return amount.length;
+        // }
+        function sumThisTypeOfAnswers (typeOfQuestions){
           var amount = typeOfQuestions.filter((questionObj) => {
             return questionObj.isAnswerCorrect === true;
           })
           return amount.length;
         }
         if (category.oneChoiceQuestions) {
-          sum += sumTheShortAnswers(category.oneChoiceQuestions);
+          sum += sumThisTypeOfAnswers(category.oneChoiceQuestions);
         }
         if (category.videoBasedQuestions) {
-          sum += sumTheShortAnswers(category.videoBasedQuestions);
+          sum += sumThisTypeOfAnswers(category.videoBasedQuestions);
         }
         if (category.imageBasedQuestions) {
-          sum += sumTheLongAnswers(category.imageBasedQuestions)
+          sum += sumThisTypeOfAnswers(category.imageBasedQuestions)
         }
         if (category.textFieldQuestions) {
-          sum += sumTheLongAnswers(category.textFieldQuestions)
+          sum += sumThisTypeOfAnswers(category.textFieldQuestions)
         }
 
         return sum

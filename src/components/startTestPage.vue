@@ -1,7 +1,22 @@
 <template>
   <div >
 
-  <v-layout>
+  <v-layout v-if="ThereIsFatalError">
+    <v-dialog v-model="ThereIsFatalError" lazy absolute>
+      <v-card>
+        <v-card-title>
+          <div class="headline">Nastąpił błąd połączenia z bazą danych online</div>
+        </v-card-title>
+        <v-card-text>Spróbuj odświeżyc stronę. Jeśli błąd będzie się dalej powtarzac, zmień przeglądarkę na dowolną inną niż ta, której obecnie używasz. </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn class="green--text darken-1" flat="flat" @click.native="dialog = false">zamknij</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-layout>
+
+  <v-layout v-else>
     <v-flex xs12  md2 offset-md5 sm3 offset-sm4>
       <v-card class="mp-5 mt-5">
         <v-card-title primary-title>
@@ -78,6 +93,9 @@ export default {
   computed: {
     thisCandidate(){
       return this.$store.state.candidateDetails;
+    },
+    ThereIsFatalError(){
+      return this.$store.state.fatalError;
     }
   }
 }

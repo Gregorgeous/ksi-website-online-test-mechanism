@@ -127,6 +127,7 @@ export default {
     },
     exitTheWholeTest(){
       this.$store.dispatch('deactivateCurrentCandidate');
+      this.$store.commit('endTheExam');
       this.$router.push('/');
     }
   },
