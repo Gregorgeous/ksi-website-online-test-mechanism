@@ -4,7 +4,7 @@ import questionForm from '@/components/questionForm'
 import startTestPage from '@/components/startTestPage'
 import resultsPage from '@/components/resultsPage'
 import examinersDashboard from '@/components/examinersDashboard'
-
+import AdminLoginView from '@/components/AdminLoginView'
 // temp solution
 import updateQuestionsDb from '@/components/questionDbUpdates/updateQuestionsDb'
 
@@ -12,6 +12,11 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/',
+      name: 'AdminLoginView',
+      component: AdminLoginView
+    },
     {
       path: '/',
       name: 'startTestPage',
