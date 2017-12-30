@@ -11,7 +11,11 @@ export const store = new Vuex.Store({
   state: {
     fatalError: false,
     refreshedDuringGrading: false,
+    loadingState: false,
     count: 1,
+    adminAccount:{
+      id: null
+    },
     categoryWiedzaOOrganizacji:{},
     categoryWychowanieMetodaMetodyki:{},
     categoryBezpieczenstwo:{},
@@ -212,6 +216,12 @@ export const store = new Vuex.Store({
     }
   },
   mutations: {
+    changeLoadingState(state, boolStatus){
+      state.loadingState = boolStatus;
+    },
+    setAdmin (state, payload) {
+      state.adminAccount = payload;
+    },
     nextQuestion (state) {
       state.count++
     },
@@ -470,6 +480,7 @@ export const store = new Vuex.Store({
       .set(candidatesTest);
     },
     anonymousSignup ({commit}) {
+      // NOTE: unused action, TODO: revalidate if needed after fully finishing client's (KSI) demands concerning the functionality.
       firebase.auth().signInAnonymously().catch(function(error) {
         // Handle Errors here.
         var errorCode = error.code;
@@ -479,18 +490,39 @@ export const store = new Vuex.Store({
       });
     },
     signUpOnStart ({commit}, payload) {
+      // NOTE: This was a previous, temporary, approach - every visitor of the page was automatically signed in as the admin of the test. TODO: revalidate if action is needed.
       firebase.auth()
       .signInWithEmailAndPassword(payload.email, payload.password)
       .then( user => {
         console.log("zalogowałem się");
       })
       .catch(function(error) {
-        // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
         console.log(errorMessage);
-        // ...
       });
+    },
+    signInAdmin ({commit, state}, payload) {
+      commit('changeLoadingState', true);
+      return firebase.auth()
+      .signInWithEmailAndPassword(payload.email, payload.password)
+      .then(
+        admin => {
+          const newAdmin = {
+            id: admin.uid,
+          }
+          commit('setAdmin', newAdmin);
+          commit('changeLoadingState', false);
+          return true;
+        }
+      )
+      .catch(
+        error => {
+          console.log(error);
+          commit('changeLoadingState', false);
+          return false;
+        }
+      )
     },
     fetchTheFinishedTest({commit,state,dispatch, getters}){
       firebase.database()

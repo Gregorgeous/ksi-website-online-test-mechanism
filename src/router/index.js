@@ -5,6 +5,7 @@ import startTestPage from '@/components/startTestPage'
 import resultsPage from '@/components/resultsPage'
 import examinersDashboard from '@/components/examinersDashboard'
 import AdminLoginView from '@/components/AdminLoginView'
+import AdminDashboard from '@/components/AdminDashboard'
 // temp solution
 import updateQuestionsDb from '@/components/questionDbUpdates/updateQuestionsDb'
 
@@ -18,7 +19,12 @@ export default new Router({
       component: AdminLoginView
     },
     {
-      path: '/',
+      path: '/admin-dashboard',
+      name: 'AdminDashboard',
+      component: AdminDashboard
+    },
+    {
+      path: '/start-test',
       name: 'startTestPage',
       component: startTestPage
     },

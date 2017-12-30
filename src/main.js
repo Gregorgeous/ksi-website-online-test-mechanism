@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
+import 'vuetify/dist/vuetify.min.css'
 import App from './App'
 import * as firebase from 'firebase'
 import router from './router'
 import { store } from './store/store';
 
-import('./../node_modules/vuetify/dist/vuetify.min.css')
+// import('./../node_modules/vuetify/dist/vuetify.min.css')
 
 Vue.use(Vuetify)
 
@@ -29,13 +30,13 @@ new Vue({
     };
     myFirebase  = firebase.initializeApp(config)
 
-    this.$store.
-    dispatch('signUpOnStart', {email: 'example@example.com',
-    password: 'example1'})
+    // this.$store.
+    // dispatch('signUpOnStart', {email: 'example@example.com',
+    // password: 'example1'})
   },
   created() {
-    this.$store.dispatch('fetchTheCandidateData')
-    this.$store.dispatch('fetchQuestionsWhenPageRefreshed');
+    // this.$store.dispatch('fetchTheCandidateData')
+    // this.$store.dispatch('fetchQuestionsWhenPageRefreshed');
 
   }
 })
