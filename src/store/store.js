@@ -356,6 +356,7 @@ export const store = new Vuex.Store({
     },
     fetchTheCandidateData({commit}){
       // IDEA: whenever we refresh the website, the data from db is pulled up which user was active before the refresh. This prevents loosing the data about the user in current exam session (e.g. in the middle of writing the test .. !)
+      // TODO: improve this action by using firebase auth cookies instead of inefficient "currentActiveCandidate" db field
       firebase.database().ref('currentActiveCandidate').once('value')
       .then((data) => {
         const object = data.val();
@@ -429,6 +430,7 @@ export const store = new Vuex.Store({
       })
     },
     fetchQuestionsWhenPageRefreshed({commit}){
+      // TODO: improve the way data is structured in database; allow multiple collections/JSONs in the "currentActiveExamStructure" by assigning them an ID. Append that ID field to the user taking the exam at their db field.
       firebase.database()
       .ref('currentActiveExamStructure')
       .once('value')

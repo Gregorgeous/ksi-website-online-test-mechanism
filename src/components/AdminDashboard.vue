@@ -24,10 +24,12 @@
             height="300">
           </v-parallax>
           <v-card-title >
-            <v-btn block>
+            <v-btn block to='/start-test'>
               Nowy test
             </v-btn>
           </v-card-title>
+          <!--TODO: checkout what's the best practice, wrapping in vue router link or leave it with "to= '' " prop in the v-btn tag -->
+          <!-- <router-link to="/start-test" > </router-link> -->
           <v-card-actions class="pt-0">
             <v-divider ></v-divider>
           </v-card-actions>
@@ -40,7 +42,8 @@
           height="300">
         </v-parallax>
         <v-card-title class="pb-0">
-          <v-btn block>
+
+          <v-btn block @click="snackbar = true">
             dodaj pytania do bazy pytań
           </v-btn>
         </v-card-title >
@@ -56,7 +59,7 @@
         height="300">
       </v-parallax>
       <v-card-title >
-        <v-btn block>
+        <v-btn block @click="snackbar = true">
           Baza testów
         </v-btn>
       </v-card-title>
@@ -67,8 +70,14 @@
 </v-layout>
 </div>
 
-
-
+<v-snackbar
+:timeout="6000"
+top
+v-model="snackbar"
+>
+Ta funkcja jeszcze nie działa, ale już wkrótce zacznie :)
+<v-btn flat class='amber--text' @click="snackbar = false">Zamknij</v-btn>
+</v-snackbar>
 </div>
 </template>
 
@@ -78,7 +87,7 @@ export default {
   name: 'hello',
   data () {
     return{
-
+      snackbar: false
     }
   },
   methods: {

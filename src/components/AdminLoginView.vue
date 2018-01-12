@@ -26,6 +26,7 @@
               </v-flex>
             </v-card-title>
             <v-divider></v-divider>
+            <form action='submit' method="post">
             <v-card-text>
               <v-layout wrap>
                 <v-flex xs12>
@@ -46,11 +47,12 @@
         </v-card-text>
         <v-card-actions>
           <v-flex>
-            <v-btn flat class="orange--text" @click="adminSignIn">
+            <v-btn  flat class="orange--text" @click="adminSignIn">
               Zaloguj
             </v-btn>
           </v-flex>
         </v-card-actions>
+      </form>
         <v-layout v-if="isLoading" transition="scale-transition" row>
           <v-flex class="text-xs-center">
             <v-progress-circular class="amber--text" indeterminate size="40"

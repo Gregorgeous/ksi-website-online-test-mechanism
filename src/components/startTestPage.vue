@@ -1,6 +1,14 @@
 <template>
   <div >
 
+ <v-flex class="text-xs-left">
+  <v-btn  flat depressed class="pl-0 text-xs-left " id="backbutton"  to='/admin-dashboard'>
+    <i class="fa fa-chevron-left" aria-hidden="true"></i>
+    <span class="ml-2">
+      panel administratora
+    </span>
+  </v-btn>
+</v-flex>
   <v-layout v-if="ThereIsFatalError">
     <v-dialog v-model="ThereIsFatalError" lazy absolute>
       <v-card>
@@ -17,7 +25,7 @@
   </v-layout>
 
   <v-layout v-else>
-    <v-flex xs12  md2 offset-md5 sm3 offset-sm4>
+    <v-flex xs12  md3 offset-md4 sm4 offset-sm3>
       <v-card class="mp-5 mt-5">
         <v-card-title primary-title>
           <v-flex>
@@ -97,12 +105,24 @@ export default {
     ThereIsFatalError(){
       return this.$store.state.fatalError;
     }
+  },
+  created() {
+    //do something after creating vue instance
+    this.$store.dispatch('fetchTheCandidateData')
   }
+
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+#backbutton {
+display: inline-block;
+left: 0
+}
+#backbutton .btn__content {
+  padding-left: 0
+}
 h1, h2 {
   font-weight: normal;
 }
