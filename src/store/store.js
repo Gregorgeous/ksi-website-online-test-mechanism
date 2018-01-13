@@ -222,6 +222,9 @@ export const store = new Vuex.Store({
     setAdmin (state, payload) {
       state.adminAccount = payload;
     },
+    logout(){
+      state.adminAccount = null;
+    },
     nextQuestion (state) {
       state.count++
     },
@@ -506,25 +509,42 @@ export const store = new Vuex.Store({
     },
     signInAdmin ({commit, state}, payload) {
       commit('changeLoadingState', true);
-      return firebase.auth()
-      .signInWithEmailAndPassword(payload.email, payload.password)
-      .then(
-        admin => {
-          const newAdmin = {
-            id: admin.uid,
+      if (!payload.persistentLogin) {
+        // IDEA: If user doesn't want to login persistenly, we set auth obj persistence to SESSION
+        return firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+        .then(function() {
+          return login();
+        })
+      } else {
+        // NOTE: by default firebase keeps auth obj persistence as LOCAL, so we don't need to set any persistence here.
+        return login();
+      }
+
+     function login () {
+        return firebase.auth()
+        .signInWithEmailAndPassword(payload.email, payload.password)
+        .then(
+          admin => {
+            const newAdmin = {
+              id: admin.uid,
+            }
+            commit('setAdmin', newAdmin);
+            commit('changeLoadingState', false);
+            return true;
           }
-          commit('setAdmin', newAdmin);
-          commit('changeLoadingState', false);
-          return true;
-        }
-      )
-      .catch(
-        error => {
-          console.log(error);
-          commit('changeLoadingState', false);
-          return false;
-        }
-      )
+        )
+        .catch(
+          error => {
+            console.log(error);
+            commit('changeLoadingState', false);
+            return false;
+          }
+        )
+      }
+    },
+    logout () {
+      firebase.auth().signOut()
+      commit('logout')
     },
     fetchTheFinishedTest({commit,state,dispatch, getters}){
       firebase.database()

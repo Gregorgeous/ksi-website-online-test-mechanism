@@ -149,6 +149,8 @@ export default {
     .then((theSum) => {
       this.totalNumOfQuestions = theSum;
     })
+    this.$store.dispatch('fetchTheCandidateData');
+    this.$store.dispatch('fetchQuestionsWhenPageRefreshed');
   }
 }
 </script>

@@ -52,6 +52,7 @@
         </v-card-actions>
       </v-card>
 
+
       <v-card class="">
         <v-parallax
         id="cardImage3"
@@ -68,7 +69,14 @@
 
   </v-flex>
 </v-layout>
+
+<v-btn outline large class="ma-0 mb-4" color="indigo" fab @click='logout'>
+  wyjdź
+</v-btn>
+
 </div>
+
+
 
 <v-snackbar
 :timeout="6000"
@@ -91,13 +99,9 @@ export default {
     }
   },
   methods: {
-    startTheTest() {
-      this.thisCandidate.userID = `${this.thisCandidate.firstName}${this.thisCandidate.lastName}`
-      // console.log(this.thisCandidate);
-      this.$store.dispatch('initializeCandidate');
-
-      this.$store.dispatch('CreateNewExamQuestionStack');
-      this.$router.push('/question-form');
+    logout(){
+      this.$store.dispatch('logout');
+      this.$router.replace('/login');
     }
   },
   computed: {

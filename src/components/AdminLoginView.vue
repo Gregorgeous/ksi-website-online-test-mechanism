@@ -43,7 +43,10 @@
                 v-model="password">
               </v-text-field>
             </v-flex>
+            <!-- <v-flex xs12>
+            </v-flex> -->
           </v-layout>
+          <v-switch label="Zaloguj na stałe" v-model="persistentLogin"></v-switch>
         </v-card-text>
         <v-card-actions>
           <v-flex>
@@ -84,7 +87,8 @@ export default {
       email: '',
       password: '',
       errorInForm: false,
-      errorMessage: ''
+      errorMessage: '',
+      persistentLogin: false
     }
   },
   methods: {
@@ -97,7 +101,7 @@ export default {
         this.errorInForm = true;
         this.errorMessage = 'Twoje hasło ma przynajmniej 6 znaków..';
       } else {
-        this.$store.dispatch('signInAdmin', {email: this.email, password:this.password})
+        this.$store.dispatch('signInAdmin', {email: this.email, password:this.password, persistentLogin: this.persistentLogin})
         .then((result) => {
           console.log("result of promise", result);
           if (result === false) {

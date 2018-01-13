@@ -80,6 +80,7 @@
 
 <script>
 import * as firebase from "firebase"
+import config from "./../fbConfig"
 
 export default {
   name: 'hello',
@@ -107,10 +108,15 @@ export default {
     }
   },
   created() {
-    //do something after creating vue instance
-    this.$store.dispatch('fetchTheCandidateData')
-  }
 
+  },
+  mounted() {
+    //do something after mounting vue instance
+    firebase.database().ref('currentActiveCandidate').once('value')
+    .then((data) => {
+      console.log(data);
+    })
+  }
 }
 </script>
 

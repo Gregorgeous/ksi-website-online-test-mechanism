@@ -112,6 +112,11 @@ export default {
     thisCandidate(){
       return this.$store.state.candidateDetails;
     }
+  },
+  created() {
+    //do something after creating vue instance
+    this.$store.dispatch('fetchTheCandidateData')
+    this.$store.dispatch('fetchQuestionsWhenPageRefreshed');
   }
 }
 </script>
