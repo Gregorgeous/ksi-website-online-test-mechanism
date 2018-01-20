@@ -223,7 +223,7 @@ export const store = new Vuex.Store({
     setAdmin (state, payload) {
       state.adminAccount = payload;
     },
-    logout(){
+    logout(state){
       state.adminAccount = null;
     },
     nextQuestion (state) {
@@ -475,7 +475,7 @@ export const store = new Vuex.Store({
       firebase.database().ref('currentActiveExamStructure').remove();
     },
     uploadCandsAnswersToDb ({commit, state}) {
-      // FIXME, TODO: if by any chance there will be a new candidate with the same name as someone already in the db, the new candidate will override the older db candidates!   
+      // FIXME, TODO: if by any chance there will be a new candidate with the same name as someone already in the db, the new candidate will override the older db candidates!
       let userId = state.candidateDetails.userID;
       if (userId == '' || userId == null){
         var num = Math.floor((Math.random() * 2000) + 1);
@@ -547,7 +547,7 @@ export const store = new Vuex.Store({
         )
       }
     },
-    logout () {
+    logout ({commit}) {
       firebase.auth().signOut()
       commit('logout')
     },
