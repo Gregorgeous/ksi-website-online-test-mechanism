@@ -60,7 +60,7 @@
         height="300">
       </v-parallax>
       <v-card-title >
-        <v-btn block @click="snackbar = true">
+        <v-btn block to="/tests-database">
           Baza testów
         </v-btn>
       </v-card-title>

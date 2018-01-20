@@ -169,7 +169,8 @@ export const store = new Vuex.Store({
       lastName: '',
       scoutGroup: '',
       userID:''
-    }
+    },
+    testsDB: null
   },
   getters: {
     forExaminersDashboard1(state) {
@@ -349,6 +350,9 @@ export const store = new Vuex.Store({
       state.categoryWychowanieMetodaMetodyki = {};
       state.categoryBezpieczenstwo = {};
       state.categoryIdeaIHistoria = {};
+    },
+    storetestsDB(state, fetchedTestsDB) {
+      state.testsDB = fetchedTestsDB;
     }
   },
   actions: {
@@ -471,6 +475,7 @@ export const store = new Vuex.Store({
       firebase.database().ref('currentActiveExamStructure').remove();
     },
     uploadCandsAnswersToDb ({commit, state}) {
+      // FIXME, TODO: if by any chance there will be a new candidate with the same name as someone already in the db, the new candidate will override the older db candidates!   
       let userId = state.candidateDetails.userID;
       if (userId == '' || userId == null){
         var num = Math.floor((Math.random() * 2000) + 1);
@@ -707,6 +712,20 @@ export const store = new Vuex.Store({
       }
 
       return totalNum;
+    },
+    fetchAlltestsDB ({commit}){
+      commit('changeLoadingState', true);
+      firebase.database().ref('candidatesTestsStack').once('value')
+      .then((allTestsSnap) => {
+        let allTests = allTestsSnap.val();
+        if (allTests) {
+          commit('storetestsDB', allTests);
+          commit('changeLoadingState', false);
+        }
+      }).catch((err) => {
+        console.log(err);
+        commit('changeLoadingState', false);
+      })
     }
   }
 })

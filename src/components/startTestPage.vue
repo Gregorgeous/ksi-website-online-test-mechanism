@@ -91,7 +91,8 @@ export default {
   },
   methods: {
     startTheTest() {
-      this.thisCandidate.userID = `${this.thisCandidate.firstName}${this.thisCandidate.lastName}`
+      // FIXME: no check for previous candidate with same name, see method 'uploadCandsAnswersToDb' in vuex actions.
+      this.thisCandidate.userID = `${this.thisCandidate.firstName} ${this.thisCandidate.lastName}`
       // console.log(this.thisCandidate);
       this.$store.dispatch('initializeCandidate');
 
@@ -108,14 +109,9 @@ export default {
     }
   },
   created() {
-
+    this.$store.dispatch('fetchTheCandidateData');
   },
   mounted() {
-    //do something after mounting vue instance
-    firebase.database().ref('currentActiveCandidate').once('value')
-    .then((data) => {
-      console.log(data);
-    })
   }
 }
 </script>

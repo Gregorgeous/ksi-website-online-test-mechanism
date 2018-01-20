@@ -115,7 +115,7 @@ export default {
   },
   created() {
     //do something after creating vue instance
-    this.$store.dispatch('fetchTheCandidateData')
+    this.$store.dispatch('fetchTheCandidateData');
     this.$store.dispatch('fetchQuestionsWhenPageRefreshed');
   }
 }
