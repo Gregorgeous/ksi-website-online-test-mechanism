@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import App from './App'
 import firebase from 'firebase'
-import config from './fbConfig.js'
+import config from './../../ksiTestMechFbConfig.json'
 import router from './router'
 import { store } from './store/store';
 

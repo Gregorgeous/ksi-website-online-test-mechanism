@@ -74,7 +74,6 @@
       </v-card>
     </v-flex>
   </v-layout>
-
 </div>
 </template>
 

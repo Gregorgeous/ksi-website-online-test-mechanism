@@ -105,15 +105,9 @@
     class=" white--text"
     :ref='key' >
     <v-card-text primary-title class="pb-0">
-      <v-layout row v-if="tFQuestion.imageURL">
+      <v-layout row v-if="tFQuestion.imageURLForThisTest">
         <v-flex>
-          <iframe
-          class="text-xs-center"
-          id="testImage"
-          :src="tFQuestion.imageURL"
-          width="100%"
-          height="400px">
-        </iframe>
+          <img :src="tFQuestion.imageURLForThisTest" alt="" width="100%">
       </v-flex>
     </v-layout>
       <v-layout row>

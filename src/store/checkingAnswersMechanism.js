@@ -42,7 +42,7 @@ var checkVideoBasedQuestionsAnswers = (state, catOfQuestions, thisCatCandAnswers
   }
 }
 
-
+// TODO: check if changing to ES6 will make any difference
 module.exports = {
   checkOneChoiceQuestionsAnswers,
   checkVideoBasedQuestionsAnswers
