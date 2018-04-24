@@ -228,10 +228,14 @@
     methods: {
       displayArrayAnswersCorrectly(arrayAnswer) {
         console.log(arrayAnswer);
-        if (arrayAnswer.length == 0) {
-          return false;
+        if (arrayAnswer) {
+          if ( arrayAnswer.length == 0) {
+            return false;
+          } else {
+            return true;
+          }
         } else {
-          return true;
+          return false;
         }
       },
       saveTheAnswers() {

@@ -32,8 +32,8 @@
             <div >
               <h3 class="headline ">Podaj swoje dane i rozpocznij test</h3>
               <hr>
-              <div class="mt-3">Test będzie trwac X minut.</div>
-              <div>Test będzie składac się z X pytań</div>
+              <div class="mt-3">Test będzie trwać od 40 do 55 minut.</div>
+              <div>Test będzie składać się z 23 pytań</div>
             </div>
           </v-flex>
         </v-card-title>
@@ -66,7 +66,7 @@
         </v-card-text>
         <v-card-actions>
           <v-flex>
-            <v-btn flat class="orange--text" @click="startTheTest">
+            <v-btn flat class="orange--text" :loading="isLoading" :disabled="isLoading" @click="startTheTest">
               Rozpocznij
             </v-btn>
           </v-flex>
@@ -79,13 +79,11 @@
 
 <script>
 import * as firebase from "firebase"
-import config from "./../fbConfig"
 
 export default {
   name: 'hello',
   data () {
     return {
-
     }
   },
   methods: {
@@ -103,14 +101,15 @@ export default {
     thisCandidate(){
       return this.$store.state.candidateDetails;
     },
+    isLoading(){
+      return this.$store.state.loadingState;
+    },
     ThereIsFatalError(){
       return this.$store.state.fatalError;
     }
   },
   created() {
     this.$store.dispatch('fetchTheCandidateData');
-  },
-  mounted() {
   }
 }
 </script>

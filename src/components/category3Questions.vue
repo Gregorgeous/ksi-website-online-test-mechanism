@@ -214,6 +214,18 @@
       }
     },
     methods: {
+      displayArrayAnswersCorrectly(arrayAnswer) {
+        console.log(arrayAnswer);
+        if (arrayAnswer) {
+          if ( arrayAnswer.length == 0) {
+            return false;
+          } else {
+            return true;
+          }
+        } else {
+          return false;
+        }
+      },
       saveTheAnswers() {
         let categoryBezpieczenstwo = {
           oneChoiceQuestions: [],

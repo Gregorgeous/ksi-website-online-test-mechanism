@@ -16,7 +16,7 @@ var calculateExamTime = function (allQuestions) {
   console.log("-------- Total exam time -------");
   console.log(timeInTotal);
 
-  return timeInTotal;
+  return timeInTotal*60;
 }
 
 export default {

@@ -95,6 +95,7 @@
     },
     data() {
       return {
+        testIsStillLoadingUp: true,
         page: 0,
         dialog: false,
         myInitialTestTime: 0,
@@ -106,11 +107,23 @@
     },
     methods: {
       countDownProgress(time) {
-        this.countDownSeconds = time
+        this.countDownSeconds = time;
+        if (time > 0 && this.fetchingTestDone) {
+          this.$store.commit('syncExamTimeInMemory', time);
+        }
       },
       countDownFinished() {
+        // TODO: figure some way out how to correctly removeExamTimeFromMemory - if you uncomment the below, apart from deleting it from memory once it REALLY finished the exam, it also accidentally deletes the thing in local storage whenever you enter it after test interruption (which defeates the purpose!)  
         // restart when countdown ends 
         this.$refs.countdown.$emit('restart')
+        if (this.fetchingTestDone) {
+          console.log("==== I'm from 'countDownFinished()' method === ");
+          console.log(
+            "... and I should only appear if the counter has REALLY finished (not the edge case when it finished only because there the test time wasn't even initialized thus is 0"
+          );
+          this.$store.commit('removeExamTimeFromMemory');
+        }
+
       },
       checkTheAnswers() {
         this.$store.commit('checkTheAnswers');
@@ -129,22 +142,23 @@
       }
     },
     computed: {
+      fetchingTestDone() {
+        return this.$store.state.fetchingTestDone;
+      },
       thisCandidate() {
         return this.$store.state.candidateDetails;
       },
       inititalTestTime() {
-        return this.$store.state.totalExamTime * 60;
+        return this.$store.state.totalExamTime;
       },
       displayMinutesLeft() {
         if ((this.countDownSeconds / 60) <= 3) {
-         this.countdownToolbarColor = 'red accent-4'
-        }
-        else if ((this.countDownSeconds / 60) <= 8) {
+          this.countdownToolbarColor = 'red accent-4'
+        } else if ((this.countDownSeconds / 60) <= 8) {
           this.countdownToolbarColor = 'red accent-1'
         } else if ((this.countDownSeconds / 60) <= 20) {
           this.countdownToolbarColor = 'orange accent-1'
-        }
-        else if ((this.countDownSeconds / 60) > 20) {
+        } else if ((this.countDownSeconds / 60) > 20) {
           this.countdownToolbarColor = 'light-green lighten-3'
         }
         if (this.countDownSeconds % 60 == 0) {
@@ -164,8 +178,11 @@
     },
     watch: {
       myInitialTestTime: function () {
+        console.log("I am triggered!");
+
         if (!this.TestHasStarted) {
           this.TestHasStarted = true;
+          this.testIsStillLoadingUp = false;
           this.testTime = this.myInitialTestTime;
           this.$refs.countdown.$emit('start')
         }
@@ -175,6 +192,7 @@
       //do something after creating vue instance
       this.$store.dispatch('fetchTheCandidateData');
       this.$store.dispatch('fetchQuestionsWhenPageRefreshed');
+
     }
   }
 

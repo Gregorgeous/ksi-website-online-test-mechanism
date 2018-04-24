@@ -17,7 +17,9 @@ export const store = new Vuex.Store({
     adminAccount: {
       id: null
     },
+    fetchingTestDone: false,
     totalExamTime: 0,
+    examTimeLeft: 0,
     categoryWiedzaOOrganizacji: {},
     categoryWychowanieMetodaMetodyki: {},
     categoryBezpieczenstwo: {},
@@ -186,6 +188,17 @@ export const store = new Vuex.Store({
     }
   },
   mutations: {
+    changefetchingTestStatus(state, boolean){
+      state.fetchingTestDone = boolean;
+    },
+    removeExamTimeFromMemory(state){
+      state.examTimeLeft = 0;
+      localStorage.removeItem('examTime');
+    },
+    syncExamTimeInMemory(state, secondsLeft){
+      state.examTimeLeft = secondsLeft;
+      localStorage.setItem('examTime', secondsLeft);
+    },
     setExamTime(state, timeInTotal) {
       state.totalExamTime = timeInTotal;
     },
@@ -268,14 +281,16 @@ export const store = new Vuex.Store({
       console.log('To mój fetch');
       console.log(ongoingExamStructure);
       // if (!state.categoryWiedzaOOrganizacji) {
-      state.categoryWiedzaOOrganizacji = ongoingExamStructure.categoryWiedzaOOrganizacji
+      state.categoryWiedzaOOrganizacji = ongoingExamStructure.categoryWiedzaOOrganizacji;
       // }
       // if (!state.categoryWychowanieMetodaMetodyki) {
-      state.categoryWychowanieMetodaMetodyki = ongoingExamStructure.categoryWychowanieMetodaMetodyki
+      state.categoryWychowanieMetodaMetodyki = ongoingExamStructure.categoryWychowanieMetodaMetodyki;
       // }
       // if (!state.categoryBezpieczenstwo) {
-      state.categoryBezpieczenstwo = ongoingExamStructure.categoryBezpieczenstwo
+      state.categoryBezpieczenstwo = ongoingExamStructure.categoryBezpieczenstwo;
       // }
+      state.categoryIdeaIHistoria = ongoingExamStructure.categoryIdeaIHistoria;
+      
     },
     fetchTheFinishedTest(state, fetchedTest) {
       if (fetchedTest.categoryWiedzaOOrganizacji) {
@@ -318,6 +333,7 @@ export const store = new Vuex.Store({
     }) {
       // IDEA: whenever we refresh the website, the data from db is pulled up which user was active before the refresh. This prevents loosing the data about the user in current exam session (e.g. in the middle of writing the test .. !)
       // TODO: improve this action by using firebase auth cookies instead of inefficient "currentActiveCandidate" db field
+      commit('changeLoadingState', true);
       firebase.database().ref('currentActiveCandidate').once('value')
         .then((data) => {
           const object = data.val();
@@ -332,10 +348,12 @@ export const store = new Vuex.Store({
           } else {
             console.log("Brak aktywnego kandydata");
           }
+           commit('changeLoadingState', false);
         })
         .catch(
           (error) => {
             console.log(error);
+            commit('changeLoadingState', false);
           }
         )
 
@@ -433,8 +451,7 @@ export const store = new Vuex.Store({
         console.log('To poniżej pobrałem z FDB:');
         console.log(dbQuestionsObject);
 
-        // TODO: check if below function is ever needed
-        // HERE I NEED TO ADD A FIELD 'whichAnswersChosen' TO ALL MULTICHOICE QUESTIONS IN THE TEST (sadly, firebase doesn't add empty arrays in DB and I don't want to modify all the mcquestions in the DB)
+        // HERE I NEED TO ADD A FIELD 'whichAnswersChosen' TO ALL MULTICHOICE QUESTIONS IN THE TEST (sadly, firebase doesn't add empty arrays in DB - although some oddly have this field with an empty array- and I don't want to modify all the mcquestions in the DB)
         for (const cat in dbQuestionsObject) {
           if (dbQuestionsObject[cat].hasOwnProperty('multiChoiceQuestions')) {
             dbQuestionsObject[cat]['multiChoiceQuestions'].forEach(question => {
@@ -453,12 +470,24 @@ export const store = new Vuex.Store({
 
         commit('CreateNewExamQuestionStack', randomisedQuestionStack);
 
+        // Here I save the whole test in the local storage for a persistence, if they ever reload the page. 
+        localStorage.setItem('categoryWiedzaOOrganizacji', JSON.stringify(randomisedQuestionStack.categoryWiedzaOOrganizacji));
+        localStorage.setItem('categoryWychowanieMetodaMetodyki', JSON.stringify(randomisedQuestionStack.categoryWychowanieMetodaMetodyki));
+        localStorage.setItem('categoryBezpieczenstwo', JSON.stringify(randomisedQuestionStack.categoryBezpieczenstwo));
+        localStorage.setItem('categoryIdeaIHistoria', JSON.stringify(randomisedQuestionStack.categoryIdeaIHistoria));
+        
+        
+
         commit('setExamTime', calculatedExamTime)
+        commit('changefetchingTestStatus', true);
       })
     },
     fetchQuestionsWhenPageRefreshed({
       commit
     }) {
+      let testTime = JSON.parse(localStorage.getItem('examTime'));
+      commit('setExamTime', testTime);
+      
       // TODO: improve the way data is structured in database; allow multiple collections/JSONs in the "currentActiveExamStructure" by assigning them an ID. Append that ID field to the user taking the exam at their db field.
       firebase.database()
         .ref('currentActiveExamStructure')
@@ -466,6 +495,7 @@ export const store = new Vuex.Store({
         .then((data) => {
           let ongoingExamStructure = data.val();
           commit('fetchQuestionsWhenPageRefreshed', ongoingExamStructure);
+          commit('changefetchingTestStatus', true);
         })
     },
     uploadActiveVerOfExamToDb({
@@ -502,7 +532,7 @@ export const store = new Vuex.Store({
       commit,
       state
     }) {
-      // FIXME, TODO: if by any chance there will be a new candidate with the same name as someone already in the db, the new candidate will override the older db candidates!
+      // FIXME: if by any chance there will be a new candidate with the same name as someone already in the db, the new candidate will override the older db candidates!
       let userId = state.candidateDetails.userID;
       if (userId == '' || userId == null) {
         var num = Math.floor((Math.random() * 2000) + 1);
