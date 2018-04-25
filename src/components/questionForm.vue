@@ -3,8 +3,8 @@
     <v-toolbar :class="[countdownToolbarColor]" fixed>
       <v-layout wrap>
         <v-flex xs8>
-          <v-toolbar-title>Test trwa, pozostało czasu:</v-toolbar-title>
-          <!-- <v-spacer></v-spacer> -->
+          <v-toolbar-title v-if="testHasReallystarted">Test trwa, pozostało czasu:</v-toolbar-title>
+          <v-toolbar-title v-else>Test rozpocznie się za:</v-toolbar-title>
           <CountDown ref="countdown" :time="inititalTestTime" @onProgress="countDownProgress" @onFinish="countDownFinished">
             minut: {{displayMinutesLeft}} , sekund: {{displaySecondsLeft}} .
           </CountDown>
@@ -250,11 +250,11 @@
       },
       countDownFinished() {
         if (this.testHasReallystarted) {
-          this.testHasReallystarted = true;                    
           this.$store.commit('removeExamTimeFromMemory');
           this.endOfTimeDialog = true;
         }else{
           this.$refs.countdown.$emit('restart');
+          this.testHasReallystarted = true;
         }
       },
       checkTheAnswers() {
@@ -327,7 +327,12 @@
       //do something after creating vue instance
       this.$store.dispatch('fetchTheCandidateData');
       this.$store.dispatch('fetchQuestionsWhenPageRefreshed');
-
+    },
+    mounted(){
+      console.log("tu jestem!");
+      if (localStorage.getItem('examTime')) {
+        this.testHasReallystarted = true;
+      }
     }
   }
 
