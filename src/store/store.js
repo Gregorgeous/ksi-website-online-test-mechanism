@@ -18,7 +18,7 @@ export const store = new Vuex.Store({
       id: null
     },
     fetchingTestDone: false,
-    totalExamTime: 0,
+    totalExamTime: 2,
     examTimeLeft: 0,
     categoryWiedzaOOrganizacji: {},
     categoryWychowanieMetodaMetodyki: {},

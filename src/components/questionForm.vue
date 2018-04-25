@@ -75,10 +75,7 @@
         </v-card>
       </v-dialog>
     </v-layout>
-    <!-- <div class="text-xs-center">
-      <v-pagination :length="4" v-model="page" circle></v-pagination>
-  </div> -->
-
+    
     <!--  Similar dialog appearing when admin wants to do a break in the test -->
     <v-layout row justify-center>
       <v-dialog v-model="breakInTheTestDialog" persistent width="50%">
@@ -142,6 +139,28 @@
       </v-dialog>
     </v-layout>
 
+      <v-dialog v-model="endOfTimeDialog" fullscreen>
+        <v-card>
+          <v-card-title>
+            <span class="headline">
+              Koniec czasu ! 
+            </span>
+          </v-card-title>
+          <v-card-text>
+            <v-layout wrap>
+              <v-flex xs12>
+                <p> Teraz przekaż urządzenie w ręce administratora aby mógł ocenić twoje odpowiedzi :) </p>
+              </v-flex>
+            </v-layout>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn class="blue--text darken-1" flat @click='saveTheTest'>Ok</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    
+
 
 
   </v-container>
@@ -171,6 +190,7 @@
         myInitialTestTime: 0,
         testTime: 0,
         TestHasStarted: false,
+        testHasReallystarted: false,
         countDownSeconds: 0,
         countdownToolbarColor: 'teal lighten-4',
         breakInTheTestDialog: false,
@@ -178,7 +198,8 @@
         password: '',
         errorInForm: false,
         errorMessage: '',
-        adminReAuthenticated: false
+        adminReAuthenticated: false,
+        endOfTimeDialog: false
       }
     },
     methods: {
@@ -228,15 +249,13 @@
         }
       },
       countDownFinished() {
-        if (this.fetchingTestDone) {
-          console.log("==== I'm from 'countDownFinished()' method === ");
-          console.log(
-            "... and I should only appear if the counter has REALLY finished (not the edge case when it finished only because there the test time wasn't even initialized thus is 0)"
-          );
+        if (this.testHasReallystarted) {
+          this.testHasReallystarted = true;                    
           this.$store.commit('removeExamTimeFromMemory');
-        } 
+          this.endOfTimeDialog = true;
+        }else{
           this.$refs.countdown.$emit('restart');
-
+        }
       },
       checkTheAnswers() {
         this.$store.commit('checkTheAnswers');
