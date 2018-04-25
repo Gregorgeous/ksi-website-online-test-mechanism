@@ -404,6 +404,10 @@ export const store = new Vuex.Store({
       dispatch
     }) {
 
+      // IDEA: at the beginning, we need to delete any posible localStorage 'examTime' data, this prevents an edge-case when we want to start a new test, but without finishing the previous one (e.g. something occured during the test and we want to start again completely - without this deletion user got completely new questions but without new time limit ) 
+      localStorage.removeItem('examTime');
+      // ------------------------------------------------------
+
       async function fetchAllQuestionsFromDb() {
         function getCat1Qs() {
           return firebase.database()
@@ -485,8 +489,12 @@ export const store = new Vuex.Store({
     fetchQuestionsWhenPageRefreshed({
       commit
     }) {
-      let testTime = JSON.parse(localStorage.getItem('examTime'));
-      commit('setExamTime', testTime);
+      console.log("fetchQuestionsWhenPageRefreshed triggered!");
+      
+      if (localStorage.getItem('examTime')) {
+        let testTime = JSON.parse(localStorage.getItem('examTime'));
+        commit('setExamTime', testTime);  
+      }
       
       // TODO: improve the way data is structured in database; allow multiple collections/JSONs in the "currentActiveExamStructure" by assigning them an ID. Append that ID field to the user taking the exam at their db field.
       firebase.database()
