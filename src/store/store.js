@@ -456,15 +456,8 @@ export const store = new Vuex.Store({
         console.log(dbQuestionsObject);
 
         // HERE I NEED TO ADD A FIELD 'whichAnswersChosen' TO ALL MULTICHOICE QUESTIONS IN THE TEST (sadly, firebase doesn't add empty arrays in DB - although some oddly have this field with an empty array- and I don't want to modify all the mcquestions in the DB)
-        for (const cat in dbQuestionsObject) {
-          if (dbQuestionsObject[cat].hasOwnProperty('multiChoiceQuestions')) {
-            dbQuestionsObject[cat]['multiChoiceQuestions'].forEach(question => {
-              if (!question.whichAnswersChosen){
-                question.whichAnswersChosen = []
-              }
-            })
-          }
-        }
+        dbQuestionsObject = appendWhichAnswersChosenFieldToAllMCQuestions(dbQuestionsObject);
+
 
         var randomisedQuestionStack = drawingQuestionsMechanism.drawTheQuestions(dbQuestionsObject);
 
@@ -489,7 +482,6 @@ export const store = new Vuex.Store({
     fetchQuestionsWhenPageRefreshed({
       commit
     }) {
-      console.log("fetchQuestionsWhenPageRefreshed triggered!");
       
       if (localStorage.getItem('examTime')) {
         let testTime = JSON.parse(localStorage.getItem('examTime'));
@@ -502,6 +494,9 @@ export const store = new Vuex.Store({
         .once('value')
         .then((data) => {
           let ongoingExamStructure = data.val();
+          // I need to re-append the field 'WhichAnswersChosen' to any of the Multi-choice questions that don't have it, otherwise it will fail to render in the CatXQuestions.vue components correctly, where I iteratively call MCQuestion.WhichAnswersChosen.join() to show the current chosen anwers in answers bar.
+          // (INSIGHT why I need to do it - Firebase 'sometimes' doesn't save empty arrays, and if the user didn't choose any answer for any of the MCQuestions they happen to have in the exam, this MCQuestion probably won't have WhichAnswersChosen what triggers the whole problem )
+          ongoingExamStructure = appendWhichAnswersChosenFieldToAllMCQuestions(ongoingExamStructure);
           commit('fetchQuestionsWhenPageRefreshed', ongoingExamStructure);
           commit('changefetchingTestStatus', true);
         })
@@ -807,3 +802,20 @@ export const store = new Vuex.Store({
     }
   }
 })
+
+// INTERNAL HELPER FUNCTIONS ! 
+
+// HERE I NEED TO ADD A FIELD 'whichAnswersChosen' TO ALL MULTICHOICE QUESTIONS IN THE TEST (sadly, firebase doesn't add empty arrays in DB - although some oddly have this field with an empty array- and I don't want to modify all the mcquestions in the DB) I call this function in 2 places - when I initially create a new exam questions stack and when I ever fetch the current active exam when page is refreshed (i.e. 'CreateNewExamQuestionStack' &  'fetchQuestionsWhenPageRefreshed' vuex actions)
+function appendWhichAnswersChosenFieldToAllMCQuestions(allQuestionsObject){
+  for (const cat in allQuestionsObject) {
+    if (allQuestionsObject[cat].hasOwnProperty('multiChoiceQuestions')) {
+      allQuestionsObject[cat]['multiChoiceQuestions'].forEach(question => {
+        if (!question.whichAnswersChosen) {
+          question.whichAnswersChosen = []
+        }
+      })
+    }
+  }
+  return allQuestionsObject;
+}
+
