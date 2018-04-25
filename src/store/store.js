@@ -188,14 +188,14 @@ export const store = new Vuex.Store({
     }
   },
   mutations: {
-    changefetchingTestStatus(state, boolean){
+    changefetchingTestStatus(state, boolean) {
       state.fetchingTestDone = boolean;
     },
-    removeExamTimeFromMemory(state){
+    removeExamTimeFromMemory(state) {
       state.examTimeLeft = 0;
       localStorage.removeItem('examTime');
     },
-    syncExamTimeInMemory(state, secondsLeft){
+    syncExamTimeInMemory(state, secondsLeft) {
       state.examTimeLeft = secondsLeft;
       localStorage.setItem('examTime', secondsLeft);
     },
@@ -290,7 +290,7 @@ export const store = new Vuex.Store({
       state.categoryBezpieczenstwo = ongoingExamStructure.categoryBezpieczenstwo;
       // }
       state.categoryIdeaIHistoria = ongoingExamStructure.categoryIdeaIHistoria;
-      
+
     },
     fetchTheFinishedTest(state, fetchedTest) {
       if (fetchedTest.categoryWiedzaOOrganizacji) {
@@ -348,7 +348,7 @@ export const store = new Vuex.Store({
           } else {
             console.log("Brak aktywnego kandydata");
           }
-           commit('changeLoadingState', false);
+          commit('changeLoadingState', false);
         })
         .catch(
           (error) => {
@@ -472,8 +472,8 @@ export const store = new Vuex.Store({
         localStorage.setItem('categoryWychowanieMetodaMetodyki', JSON.stringify(randomisedQuestionStack.categoryWychowanieMetodaMetodyki));
         localStorage.setItem('categoryBezpieczenstwo', JSON.stringify(randomisedQuestionStack.categoryBezpieczenstwo));
         localStorage.setItem('categoryIdeaIHistoria', JSON.stringify(randomisedQuestionStack.categoryIdeaIHistoria));
-        
-        
+
+
 
         commit('setExamTime', calculatedExamTime)
         commit('changefetchingTestStatus', true);
@@ -482,12 +482,12 @@ export const store = new Vuex.Store({
     fetchQuestionsWhenPageRefreshed({
       commit
     }) {
-      
+
       if (localStorage.getItem('examTime')) {
         let testTime = JSON.parse(localStorage.getItem('examTime'));
-        commit('setExamTime', testTime);  
+        commit('setExamTime', testTime);
       }
-      
+
       // TODO: improve the way data is structured in database; allow multiple collections/JSONs in the "currentActiveExamStructure" by assigning them an ID. Append that ID field to the user taking the exam at their db field.
       firebase.database()
         .ref('currentActiveExamStructure')
@@ -613,6 +613,24 @@ export const store = new Vuex.Store({
             }
           )
       }
+    },
+    adminSignInForBreakInTest({commit},payload) {
+      commit('changeLoadingState', true);      
+      return firebase.auth()
+        .signInWithEmailAndPassword(payload.email, payload.password)
+        .then(
+          admin => {
+            commit('changeLoadingState', false);
+            return true;
+          }
+        )
+        .catch(
+          error => {
+            console.log(error);
+            commit('changeLoadingState', false);
+            return false;
+          }
+        )
     },
     logout({
       commit
@@ -806,7 +824,7 @@ export const store = new Vuex.Store({
 // INTERNAL HELPER FUNCTIONS ! 
 
 // HERE I NEED TO ADD A FIELD 'whichAnswersChosen' TO ALL MULTICHOICE QUESTIONS IN THE TEST (sadly, firebase doesn't add empty arrays in DB - although some oddly have this field with an empty array- and I don't want to modify all the mcquestions in the DB) I call this function in 2 places - when I initially create a new exam questions stack and when I ever fetch the current active exam when page is refreshed (i.e. 'CreateNewExamQuestionStack' &  'fetchQuestionsWhenPageRefreshed' vuex actions)
-function appendWhichAnswersChosenFieldToAllMCQuestions(allQuestionsObject){
+function appendWhichAnswersChosenFieldToAllMCQuestions(allQuestionsObject) {
   for (const cat in allQuestionsObject) {
     if (allQuestionsObject[cat].hasOwnProperty('multiChoiceQuestions')) {
       allQuestionsObject[cat]['multiChoiceQuestions'].forEach(question => {
@@ -818,4 +836,3 @@ function appendWhichAnswersChosenFieldToAllMCQuestions(allQuestionsObject){
   }
   return allQuestionsObject;
 }
-

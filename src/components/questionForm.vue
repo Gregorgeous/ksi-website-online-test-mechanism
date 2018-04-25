@@ -1,13 +1,20 @@
 <template>
   <v-container class="mt-5">
     <v-toolbar :class="[countdownToolbarColor]" fixed>
-      <v-flex>
-        <v-toolbar-title>Test trwa, pozostało czasu:</v-toolbar-title>
-        <!-- <v-spacer></v-spacer> -->
-        <CountDown ref="countdown" :time="inititalTestTime" @onProgress="countDownProgress" @onFinish="countDownFinished">
-          minut: {{displayMinutesLeft}} , sekund: {{displaySecondsLeft}} .
-        </CountDown>
-      </v-flex>
+      <v-layout wrap>
+        <v-flex xs8>
+          <v-toolbar-title>Test trwa, pozostało czasu:</v-toolbar-title>
+          <!-- <v-spacer></v-spacer> -->
+          <CountDown ref="countdown" :time="inititalTestTime" @onProgress="countDownProgress" @onFinish="countDownFinished">
+            minut: {{displayMinutesLeft}} , sekund: {{displaySecondsLeft}} .
+          </CountDown>
+        </v-flex>
+        <v-flex xs4>
+          <v-btn @click="breakInTheTestDialog = true">
+            Zatrzymaj test
+          </v-btn>
+        </v-flex>
+      </v-layout>
     </v-toolbar>
 
     <v-layout class="mt-2">
@@ -72,6 +79,69 @@
       <v-pagination :length="4" v-model="page" circle></v-pagination>
   </div> -->
 
+    <!--  Similar dialog appearing when admin wants to do a break in the test -->
+    <v-layout row justify-center>
+      <v-dialog v-model="breakInTheTestDialog" persistent width="50%">
+        <v-card v-if="!adminReAuthenticated">
+          <v-card-title primary-title>
+            <v-flex>
+              <div>
+                <h3 class="headline ">Aby zatrzymać test, zaloguj się ponownie</h3>
+              </div>
+            </v-flex>
+          </v-card-title>
+          <v-divider></v-divider>
+          <form action='submit' method="post">
+            <v-card-text>
+              <v-layout wrap>
+                <v-flex xs12>
+                  <v-text-field label="email" type='email' v-model="email">
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field label="hasło" type='password' v-model="password">
+                  </v-text-field>
+                </v-flex>
+              </v-layout>
+            </v-card-text>
+            <v-card-actions>
+              <v-flex>
+                <v-btn flat class="brown--text" @click="cancelBreakingTheTest">
+                  Cofnij
+                </v-btn>
+                <v-btn flat :loading="isLoading" :disabled="isLoading" class="orange--text" @click="adminSignInForBreakInTest">
+                  Zaloguj
+                </v-btn>
+              </v-flex>
+            </v-card-actions>
+          </form>
+          <v-alert warning transition="scale-transition" :value="errorInForm" class="text-xs-center">
+            {{errorMessage}}
+          </v-alert>
+        </v-card>
+
+        <v-card v-else>
+          <v-layout>
+            <v-flex>
+              <h5>Czas zatrzymany ... a przynajmniej na moment :> </h5>
+
+            </v-flex>
+          </v-layout>
+          <v-layout>
+            <img src="static/Time-Bomb-test-stopped.png" width="100%" height="30%" alt="a ticking timer in a bomb indicating that the test has been stopped for a moment">
+          </v-layout>
+          <v-layout>
+            <v-flex>
+              <v-btn round class="error" @click="carryOnTheTest">
+                kontynuuj test
+              </v-btn>
+            </v-flex>
+          </v-layout>
+        </v-card>
+
+      </v-dialog>
+    </v-layout>
+
 
 
   </v-container>
@@ -102,10 +172,55 @@
         testTime: 0,
         TestHasStarted: false,
         countDownSeconds: 0,
-        countdownToolbarColor: 'teal lighten-4'
+        countdownToolbarColor: 'teal lighten-4',
+        breakInTheTestDialog: false,
+        email: '',
+        password: '',
+        errorInForm: false,
+        errorMessage: '',
+        adminReAuthenticated: false
       }
     },
     methods: {
+      cancelBreakingTheTest(){
+        this.email = '';
+        this.password = '';
+        this.breakInTheTestDialog = false;
+      },
+      carryOnTheTest() {
+        this.breakInTheTestDialog = false;
+        this.email = '';
+        this.password = '';
+        this.adminReAuthenticated = false;
+        this.$refs.countdown.$emit('start');
+      },
+      adminSignInForBreakInTest() {
+        if (this.email == '' || this.password == '') {
+          this.errorInForm = true;
+          this.errorMessage = 'Jedno lub więcej pól nie zostało wypełnionych!';
+        } else if (this.password.length < 6) {
+          this.errorInForm = true;
+          this.errorMessage = 'Twoje hasło ma przynajmniej 6 znaków..';
+        } else {
+          this.$store.dispatch('adminSignInForBreakInTest', {
+              email: this.email,
+              password: this.password
+            })
+            .then((result) => {
+              console.log("result of promise", result);
+              if (result === false) {
+                this.errorInForm = true;
+                this.errorMessage = 'Hasło lub email się nie zgadzają';
+                this.adminReAuthenticated = false;
+              } else {
+                this.errorInForm = false;
+                this.errorMessage = '';
+                this.adminReAuthenticated = true;
+                this.$refs.countdown.$emit('stop');
+              }
+            })
+        }
+      },
       countDownProgress(time) {
         this.countDownSeconds = time;
         if (time > 0 && this.fetchingTestDone) {
@@ -113,16 +228,14 @@
         }
       },
       countDownFinished() {
-        // TODO: figure some way out how to correctly removeExamTimeFromMemory - if you uncomment the below, apart from deleting it from memory once it REALLY finished the exam, it also accidentally deletes the thing in local storage whenever you enter it after test interruption (which defeates the purpose!)  
-        // restart when countdown ends 
-        this.$refs.countdown.$emit('restart')
         if (this.fetchingTestDone) {
           console.log("==== I'm from 'countDownFinished()' method === ");
           console.log(
-            "... and I should only appear if the counter has REALLY finished (not the edge case when it finished only because there the test time wasn't even initialized thus is 0"
+            "... and I should only appear if the counter has REALLY finished (not the edge case when it finished only because there the test time wasn't even initialized thus is 0)"
           );
           this.$store.commit('removeExamTimeFromMemory');
-        }
+        } 
+          this.$refs.countdown.$emit('restart');
 
       },
       checkTheAnswers() {
@@ -142,6 +255,9 @@
       }
     },
     computed: {
+      isLoading() {
+        return this.$store.state.loadingState;
+      },
       fetchingTestDone() {
         return this.$store.state.fetchingTestDone;
       },
@@ -162,9 +278,9 @@
           this.countdownToolbarColor = 'light-green lighten-3'
         }
         if (this.countDownSeconds % 60 == 0) {
-          return Math.ceil((this.countDownSeconds + 1) / 60);
+          return Math.ceil((this.countDownSeconds + 1) / 60) -1;
         } else {
-          return Math.ceil(this.countDownSeconds / 60);
+          return Math.ceil(this.countDownSeconds / 60) - 1;
         }
       },
       displaySecondsLeft() {
@@ -217,6 +333,24 @@
 
   a {
     color: #42b983;
+  }
+
+
+  .slide-fade-enter-active {
+    transition: all .3s ease;
+  }
+
+  .slide-fade-leave-active {
+    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  }
+
+  .slide-fade-enter,
+  .slide-fade-leave-to
+  /* .slide-fade-leave-active below version 2.1.8 */
+
+    {
+    transform: translateX(10px);
+    opacity: 0;
   }
 
 </style>
