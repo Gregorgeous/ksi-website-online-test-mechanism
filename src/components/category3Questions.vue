@@ -20,17 +20,28 @@
             <v-divider></v-divider>
           </v-card-text>
           <v-card-actions>
-            <v-flex offset-md1>
-              <v-radio-group row v-model="oCQuestion.whichAnswerChosen">
-                <v-radio :label="oCQuestion.correctAnswer" :value="oCQuestion.correctAnswer"></v-radio>
-                <v-radio :label="oCQuestion.answer2" :value="oCQuestion.answer2">
-                </v-radio>
-                <v-radio v-if="oCQuestion.answer3" :label="oCQuestion.answer3" :value="oCQuestion.answer3">
-                </v-radio>
-                <v-radio v-if="oCQuestion.answer4" :label="oCQuestion.answer4" :value="oCQuestion.answer4">
-                </v-radio>
-              </v-radio-group>
-            </v-flex>
+            <v-radio-group v-model="oCQuestion.whichAnswerChosen">
+              <v-layout column>
+                <v-flex ref="OCQAnswer">
+                  <v-radio :label="oCQuestion.correctAnswer" :value="oCQuestion.correctAnswer"></v-radio>
+                </v-flex>
+
+                <v-flex ref="OCQAnswer" >
+                  <v-radio  :label="oCQuestion.answer2" :value="oCQuestion.answer2">
+                  </v-radio>
+                </v-flex>
+
+                <v-flex ref="OCQAnswer"  v-if="oCQuestion.answer3">
+                  <v-radio  :label="oCQuestion.answer3" :value="oCQuestion.answer3">
+                  </v-radio>
+                </v-flex>
+
+                <v-flex ref="OCQAnswer"  v-if="oCQuestion.answer4">
+                  <v-radio  :label="oCQuestion.answer4" :value="oCQuestion.answer4">
+                  </v-radio>
+                </v-flex>
+              </v-layout>
+            </v-radio-group>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -194,6 +205,7 @@
       }
     },
     computed: {
+
       categoryBezpieczenstwo() {
         return this.$store.state.categoryBezpieczenstwo;
       },
@@ -217,7 +229,7 @@
       displayArrayAnswersCorrectly(arrayAnswer) {
         console.log(arrayAnswer);
         if (arrayAnswer) {
-          if ( arrayAnswer.length == 0) {
+          if (arrayAnswer.length == 0) {
             return false;
           } else {
             return true;
@@ -229,7 +241,7 @@
       saveTheAnswers() {
         let categoryBezpieczenstwoAnswers = {
           oneChoiceQuestions: [],
-          multiChoiceQuestions:[],
+          multiChoiceQuestions: [],
           videoBasedQuestions: [],
           imageBasedQuestions: [],
           textFieldQuestions: []
@@ -258,7 +270,7 @@
               whichAnswersChosen: this.multiChoiceQuestions[i].whichAnswersChosen,
               correctAnswers: this.multiChoiceQuestions[i].correctAnswers,
               isAnswerCorrect: null,
-              questionAnswerScore: 0 
+              questionAnswerScore: 0
             }
             categoryBezpieczenstwoAnswers.multiChoiceQuestions.push(dataFormattedObject);
           }
@@ -313,9 +325,19 @@
         this.snackbar = true;
       }
     },
-    updated() {
-      //do something after updating vue instance
-      // console.log("Jestem sobie updated ! ;D ");
+    mounted(){
+      setTimeout( () => {
+        let test = this.$refs;
+        for (const key in test) {
+          if (test.hasOwnProperty(key) && key == 'OCQAnswer') {
+            const answer = test[key];
+            for (let i = 0; i < answer.length; i++) {
+              let randomOrder = Math.round(Math.random() * 12);
+              answer[i].className = `flex order-xs${randomOrder}`;
+            }
+          }
+        }
+      },2000)
     }
   }
 
