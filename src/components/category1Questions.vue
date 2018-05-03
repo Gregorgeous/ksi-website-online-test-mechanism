@@ -124,13 +124,6 @@
             <v-layout row>
               <v-flex>
                 <img :src="iBQuestion.imageURLForThisTest" alt="" width="100%">
-                <!-- <iframe
-          class="text-xs-center"
-          id="testImage"
-          :src="iBQuestion.imageURL"
-          width="100%"
-          height="400px">
-        </iframe> -->
               </v-flex>
             </v-layout>
             <v-layout row>
@@ -228,7 +221,7 @@
       displayArrayAnswersCorrectly(arrayAnswer) {
         console.log(arrayAnswer);
         if (arrayAnswer) {
-          if ( arrayAnswer.length == 0) {
+          if (arrayAnswer.length == 0) {
             return false;
           } else {
             return true;
@@ -240,6 +233,7 @@
       saveTheAnswers() {
         let categoryWiedzaOOrganizacjiAnswers = {
           oneChoiceQuestions: [],
+          multiChoiceQuestions:[],
           videoBasedQuestions: [],
           imageBasedQuestions: [],
           textFieldQuestions: []
@@ -248,6 +242,8 @@
           for (var i = 0; i < this.oneChoiceQuestions.length; i++) {
             let dataFormattedObject = {
               question: this.oneChoiceQuestions[i].question,
+              difficultyLevel: this.oneChoiceQuestions[i].difficultyLevel,
+              starredQuestion: this.oneChoiceQuestions[i].starredQuestion,
               candidatesAnswer: this.oneChoiceQuestions[i].whichAnswerChosen,
               correctAnswer: this.oneChoiceQuestions[i].correctAnswer,
               isAnswerCorrect: null
@@ -256,10 +252,27 @@
           }
         }
 
+        if (this.multiChoiceQuestions) {
+          for (var i = 0; i < this.multiChoiceQuestions.length; i++) {
+            let dataFormattedObject = {
+              question: this.multiChoiceQuestions[i].question,
+              difficultyLevel: this.multiChoiceQuestions[i].difficultyLevel,
+              starredQuestion: this.multiChoiceQuestions[i].starredQuestion,
+              whichAnswersChosen: this.multiChoiceQuestions[i].whichAnswersChosen,
+              correctAnswers: this.multiChoiceQuestions[i].correctAnswers,
+              isAnswerCorrect: null,
+              questionAnswerScore: 0 
+            }
+            categoryWiedzaOOrganizacjiAnswers.multiChoiceQuestions.push(dataFormattedObject);
+          }
+        }
+
         if (this.videoBasedQuestions) {
           for (i = 0; i < this.videoBasedQuestions.length; i++) {
             let dataFormattedObject = {
               question: this.videoBasedQuestions[i].question,
+              difficultyLevel: this.videoBasedQuestions[i].difficultyLevel,
+              starredQuestion: this.videoBasedQuestions[i].starredQuestion,
               candidatesAnswer: this.videoBasedQuestions[i].whichAnswerChosen,
               isAnswerCorrect: null
             }
@@ -271,6 +284,8 @@
           for (i = 0; i < this.imageBasedQuestions.length; i++) {
             let dataFormattedObject = {
               question: this.imageBasedQuestions[i].question,
+              difficultyLevel: this.imageBasedQuestions[i].difficultyLevel,
+              starredQuestion: this.imageBasedQuestions[i].starredQuestion,
               candidatesAnswer: this.imageBasedQuestions[i].candidatesAnswer,
               isAnswerCorrect: null,
               imageURLForThisTest: this.imageBasedQuestions[i].imageURLForThisTest
@@ -283,6 +298,8 @@
           for (i = 0; i < this.textFieldQuestions.length; i++) {
             let dataFormattedObject = {
               question: this.textFieldQuestions[i].question,
+              difficultyLevel: this.textFieldQuestions[i].difficultyLevel,
+              starredQuestion: this.textFieldQuestions[i].starredQuestion,
               candidatesAnswer: this.textFieldQuestions[i].candidatesAnswer,
               isAnswerCorrect: null
             }

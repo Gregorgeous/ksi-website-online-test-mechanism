@@ -48,7 +48,7 @@
                     </v-flex>
                     <v-flex sm12 md4>
                       <v-card-media
-                      src="http://download.seaicons.com/icons/custom-icon-design/flatastic-2/512/success-icon.png"
+                      src="static/success-icon.png"
                       height="125px"
                       contain
                       ></v-card-media>

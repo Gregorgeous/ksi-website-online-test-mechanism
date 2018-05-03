@@ -14,6 +14,7 @@ export const store = new Vuex.Store({
     refreshedDuringGrading: false,
     loadingState: false,
     count: 1,
+    allMCQuestions: 0,
     adminAccount: {
       id: null
     },
@@ -188,6 +189,26 @@ export const store = new Vuex.Store({
     }
   },
   mutations: {
+    countMCQsInTheCurrentTest(state){
+      // state.allMCQuestions;
+      let test = state.candidatesAnswers;
+      let counter = 0;
+      for (const cat in test) {
+        if (test.hasOwnProperty(cat)) {
+          let givenCat = test[cat];
+          if (givenCat.multiChoiceQuestions) {
+            let allCatMCQs = givenCat.multiChoiceQuestions;
+            allCatMCQs.forEach(question => {
+              counter++;
+            });
+          }
+        }
+      }
+      console.log("------ w countMCQsInTheCurrentTest -----");
+      console.log("tyle policzylem MCQs:");
+      console.log(counter);
+      state.allMCQuestions = counter;
+    },
     changefetchingTestStatus(state, boolean) {
       state.fetchingTestDone = boolean;
     },
@@ -523,9 +544,8 @@ export const store = new Vuex.Store({
         var stateCat = state.categoryBezpieczenstwo;
         firebase.database().ref('currentActiveExamStructure/' + whichCat).set(stateCat);
       } else if (whichCat == 'categoryIdeaIHistoria') {
-        console.log("FOR NOW I DO NOTHING FOR THIS CATEGORY - ONCE KSI PROVIDES QUESTIONS FOR THIS CAT, YOU'LL NEED TO UPDATE ME");
-        // var stateCat = state.categoryIdeaIHistoria;
-        // firebase.database().ref('currentActiveExamStructure/' + whichCat).set(stateCat);
+        var stateCat = state.categoryIdeaIHistoria;
+        firebase.database().ref('currentActiveExamStructure/' + whichCat).set(stateCat);
       }
     },
     deactivateCurrentExamVersion() {
@@ -671,11 +691,6 @@ export const store = new Vuex.Store({
           }
 
         })
-
-
-
-
-
     },
     numberOfCorrectAnswers({
       state
@@ -699,6 +714,9 @@ export const store = new Vuex.Store({
         }
         if (category.oneChoiceQuestions) {
           sum += sumThisTypeOfAnswers(category.oneChoiceQuestions);
+        }
+        if (category.multiChoiceQuestions) {
+          sum += sumThisTypeOfAnswers(category.multiChoiceQuestions);
         }
         if (category.videoBasedQuestions) {
           sum += sumThisTypeOfAnswers(category.videoBasedQuestions);
@@ -756,6 +774,9 @@ export const store = new Vuex.Store({
         let sum = 0;
         if (category.oneChoiceQuestions) {
           sum += category.oneChoiceQuestions.length;
+        }
+        if (category.multiChoiceQuestions) {
+          sum += category.multiChoiceQuestions.length;
         }
         if (category.videoBasedQuestions) {
           sum += category.videoBasedQuestions.length;
