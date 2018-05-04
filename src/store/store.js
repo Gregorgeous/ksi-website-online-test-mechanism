@@ -163,8 +163,8 @@ export const store = new Vuex.Store({
         countUpEachCat(state.categoryBezpieczenstwo);
         countUpEachCat(state.categoryIdeaIHistoria);
       }
-      console.log("-------jestem w getters:forExaminersDashboard1: --------");
-      console.log('Tyle policzyłem poprawnych odp. jedn. wyboru');
+      // console.log("-------jestem w getters:forExaminersDashboard1: --------");
+      console.log('Poprawne odp. jedn. wyboru');
       console.log(counter);
       return counter;
     },
@@ -204,9 +204,9 @@ export const store = new Vuex.Store({
           }
         }
       }
-      console.log("------ w countMCQsInTheCurrentTest -----");
-      console.log("tyle policzylem MCQs:");
-      console.log(counter);
+      // console.log("------ w countMCQsInTheCurrentTest -----");
+      // console.log("tyle policzylem MCQs:");
+      // console.log(counter);
       state.allMCQuestions = counter;
     },
     changefetchingTestStatus(state, boolean) {
@@ -278,7 +278,7 @@ export const store = new Vuex.Store({
       state
     }) {
       // This method is basically useless, the vuex store state is reactive to all changes at the componet side ... BUT the Vue.js dev panel doesn't show any updated changes until you commit or dispatch something :P
-      console.log("gradeTFQuestions' executed:See now the updated Vue dev panel");
+      // console.log("gradeTFQuestions' executed:See now the updated Vue dev panel");
     },
     changeUserIdIfNull(state, uId) {
       state.candidateDetails.userID = uId;
@@ -294,13 +294,13 @@ export const store = new Vuex.Store({
     },
     fetchQuestionsWhenPageRefreshed(state, ongoingExamStructure) {
       if (!ongoingExamStructure) {
-        console.log("Brak aktywnego egzaminu w db");
-        console.log("Nie nadpisuję więc Vuexowego Store'a !");
+        // console.log("Brak aktywnego egzaminu w db");
+        // console.log("Nie nadpisuję więc Vuexowego Store'a !");
         return
       }
 
-      console.log('To mój fetch');
-      console.log(ongoingExamStructure);
+      // console.log('To mój fetch');
+      // console.log(ongoingExamStructure);
       // if (!state.categoryWiedzaOOrganizacji) {
       state.categoryWiedzaOOrganizacji = ongoingExamStructure.categoryWiedzaOOrganizacji;
       // }
@@ -378,7 +378,6 @@ export const store = new Vuex.Store({
           }
         )
 
-      console.log('przechodzę przez fetching..');
     },
     deactivateCurrentCandidate() {
       // IDEA: Once we finish the exam session, we remove the reference of 'currentActiveCandidate' in the Firebase DB as the candidate has just finished the exam session and that reference is no longer needed
@@ -468,13 +467,10 @@ export const store = new Vuex.Store({
           cat3Questions,
           cat4Questions
         };
-        console.log(payload);
         return payload;
       }
 
       fetchAllQuestionsFromDb().then((dbQuestionsObject) => {
-        console.log('To poniżej pobrałem z FDB:');
-        console.log(dbQuestionsObject);
 
         // HERE I NEED TO ADD A FIELD 'whichAnswersChosen' TO ALL MULTICHOICE QUESTIONS IN THE TEST (sadly, firebase doesn't add empty arrays in DB - although some oddly have this field with an empty array- and I don't want to modify all the mcquestions in the DB)
         dbQuestionsObject = appendWhichAnswersChosenFieldToAllMCQuestions(dbQuestionsObject);
@@ -634,6 +630,21 @@ export const store = new Vuex.Store({
           )
       }
     },
+    sendPasswordResetEmail({commit},email){
+      commit("changeLoadingState", true);
+      firebase.auth().languageCode = "pl";
+      return firebase.auth()
+        .sendPasswordResetEmail(email)
+        .then(() => {
+          commit("changeLoadingState", false);
+          return true;
+        })
+        .catch(error => {
+          console.log(error);
+          commit("changeLoadingState", false);
+          return false;
+        });      
+    },
     adminSignInForBreakInTest({commit},payload) {
       commit('changeLoadingState', true);      
       return firebase.auth()
@@ -669,18 +680,18 @@ export const store = new Vuex.Store({
         .once('value')
         .then((userIDSnaphot) => {
           let theId = userIDSnaphot.val();
-          console.log('to jest id kandydata:');
-          console.log(theId);
+          // console.log('to jest id kandydata:');
+          // console.log(theId);
 
           if (theId !== '') {
-            console.log("przeszedłem przez condition");
+            // console.log("przeszedłem przez condition");
             firebase.database()
               .ref('candidatesTestsStack/' + theId)
               .once('value')
               .then((fetchedTestSnapshot) => {
                 let fetchedTest = fetchedTestSnapshot.val();
-                console.log("znalazłem test, oto on:");
-                console.log(fetchedTest);
+                // console.log("znalazłem test, oto on:");
+                // console.log(fetchedTest);
                 commit('fetchTheFinishedTest', fetchedTest);
               })
               .catch((e) => {

@@ -129,11 +129,9 @@
         }
         for (var name in testsSource) {
           if (name.toLowerCase().search(query) > -1) {
-            console.log("dziala!");
             this.filteredTests[name] = testsSource[name];
           }
         }
-        console.log(this.filteredTests);
         this.outputFiltered = true;
       },
       cancelSearch() {

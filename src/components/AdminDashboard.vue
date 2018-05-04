@@ -83,7 +83,7 @@
 top
 v-model="snackbar"
 >
-Ta funkcja jeszcze nie działa, ale już wkrótce zacznie :)
+Ta funkcja jeszcze nie działa, ale pracujemy nad tym :)
 <v-btn flat class='amber--text' @click="snackbar = false">Zamknij</v-btn>
 </v-snackbar>
 </div>
