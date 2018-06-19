@@ -78,7 +78,7 @@
           </v-card-media>
           <v-card-actions>
             <v-flex>
-              <v-btn flat class="orange--text" @click="snackbar = true">
+              <v-btn flat class="orange--text" @click="navigateToCandidateDetails(name)">
                 szczegóły
               </v-btn>
             </v-flex>
@@ -100,11 +100,6 @@
         </v-card>
       </v-flex>
     </v-layout>
-
-    <v-snackbar :timeout="6000" top v-model="snackbar">
-      Na razie widok ogólny, dajcie mi znać co chcielibyście w widoku szczegółowym :)
-      <v-btn flat class='amber--text' @click="snackbar = false">Zamknij</v-btn>
-    </v-snackbar>
 
   </div>
 </template>
@@ -137,6 +132,9 @@
       cancelSearch() {
         this.outputFiltered = false;
         this.filteredTests = {};
+      },
+      navigateToCandidateDetails(candName){
+        this.$router.push({ path: `/tests-database/${candName}` })
       }
     },
     computed: {

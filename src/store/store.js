@@ -141,7 +141,8 @@ export const store = new Vuex.Store({
       scoutGroup: '',
       userID: ''
     },
-    testsDB: null
+    testsDB: null,
+    testDetailsInDBView: {}
   },
   getters: {
     forExaminersDashboard1(state) {
@@ -164,8 +165,8 @@ export const store = new Vuex.Store({
         countUpEachCat(state.categoryIdeaIHistoria);
       }
       // console.log("-------jestem w getters:forExaminersDashboard1: --------");
-      console.log('Poprawne odp. jedn. wyboru');
-      console.log(counter);
+      // console.log('Poprawne odp. jedn. wyboru');
+      // console.log(counter);
       return counter;
     },
     forExaminersDashboard2(state) {
@@ -189,7 +190,14 @@ export const store = new Vuex.Store({
     }
   },
   mutations: {
-    countMCQsInTheCurrentTest(state){
+    testMut() {
+      let aa = 'aa';
+      return aa;
+    },
+    fetchTestDetailsDB(state, TestDetails) {
+      state.testDetailsInDBView = TestDetails;
+    },
+    countMCQsInTheCurrentTest(state) {
       // state.allMCQuestions;
       let test = state.candidatesAnswers;
       let counter = 0;
@@ -355,7 +363,7 @@ export const store = new Vuex.Store({
       // IDEA: whenever we refresh the website, the data from db is pulled up which user was active before the refresh. This prevents loosing the data about the user in current exam session (e.g. in the middle of writing the test .. !)
       // TODO: improve this action by using firebase auth cookies instead of inefficient "currentActiveCandidate" db field
       commit('changeLoadingState', true);
-      firebase.database().ref('currentActiveCandidate').once('value')
+      return firebase.database().ref('currentActiveCandidate').once('value')
         .then((data) => {
           const object = data.val();
           if (object) {
@@ -510,7 +518,10 @@ export const store = new Vuex.Store({
         .ref('currentActiveExamStructure')
         .once('value')
         .then((data) => {
+          
           let ongoingExamStructure = data.val();
+          
+          
           // I need to re-append the field 'WhichAnswersChosen' to any of the Multi-choice questions that don't have it, otherwise it will fail to render in the CatXQuestions.vue components correctly, where I iteratively call MCQuestion.WhichAnswersChosen.join() to show the current chosen anwers in answers bar.
           // (INSIGHT why I need to do it - Firebase 'sometimes' doesn't save empty arrays, and if the user didn't choose any answer for any of the MCQuestions they happen to have in the exam, this MCQuestion probably won't have WhichAnswersChosen what triggers the whole problem )
           ongoingExamStructure = appendWhichAnswersChosenFieldToAllMCQuestions(ongoingExamStructure);
@@ -630,7 +641,9 @@ export const store = new Vuex.Store({
           )
       }
     },
-    sendPasswordResetEmail({commit},email){
+    sendPasswordResetEmail({
+      commit
+    }, email) {
       commit("changeLoadingState", true);
       firebase.auth().languageCode = "pl";
       return firebase.auth()
@@ -643,10 +656,12 @@ export const store = new Vuex.Store({
           console.log(error);
           commit("changeLoadingState", false);
           return false;
-        });      
+        });
     },
-    adminSignInForBreakInTest({commit},payload) {
-      commit('changeLoadingState', true);      
+    adminSignInForBreakInTest({
+      commit
+    }, payload) {
+      commit('changeLoadingState', true);
       return firebase.auth()
         .signInWithEmailAndPassword(payload.email, payload.password)
         .then(
@@ -675,7 +690,7 @@ export const store = new Vuex.Store({
       dispatch,
       getters
     }) {
-      firebase.database()
+      return firebase.database()
         .ref('currentActiveCandidate/userID')
         .once('value')
         .then((userIDSnaphot) => {
@@ -685,14 +700,16 @@ export const store = new Vuex.Store({
 
           if (theId !== '') {
             // console.log("przeszedłem przez condition");
-            firebase.database()
+            return firebase.database()
               .ref('candidatesTestsStack/' + theId)
               .once('value')
               .then((fetchedTestSnapshot) => {
                 let fetchedTest = fetchedTestSnapshot.val();
                 // console.log("znalazłem test, oto on:");
                 // console.log(fetchedTest);
+                
                 commit('fetchTheFinishedTest', fetchedTest);
+                return fetchedTest;
               })
               .catch((e) => {
                 console.log(e);
@@ -801,34 +818,36 @@ export const store = new Vuex.Store({
         return sum
       }
 
+      let candidatesAnswers = state.candidatesAnswers;
+
       if (whichCatToSumUp === 'all') {
-        if (state.categoryWiedzaOOrganizacji) {
-          totalNum += sumItUp(state.categoryWiedzaOOrganizacji);
+        if (candidatesAnswers.categoryWiedzaOOrganizacji) {
+          totalNum += sumItUp(candidatesAnswers.categoryWiedzaOOrganizacji);
         }
-        if (state.categoryWychowanieMetodaMetodyki) {
-          totalNum += sumItUp(state.categoryWychowanieMetodaMetodyki);
+        if (candidatesAnswers.categoryWychowanieMetodaMetodyki) {
+          totalNum += sumItUp(candidatesAnswers.categoryWychowanieMetodaMetodyki);
         }
-        if (state.categoryBezpieczenstwo) {
-          totalNum += sumItUp(state.categoryBezpieczenstwo);
+        if (candidatesAnswers.categoryBezpieczenstwo) {
+          totalNum += sumItUp(candidatesAnswers.categoryBezpieczenstwo);
         }
-        if (state.categoryIdeaIHistoria) {
-          totalNum += sumItUp(state.categoryIdeaIHistoria);
+        if (candidatesAnswers.categoryIdeaIHistoria) {
+          totalNum += sumItUp(candidatesAnswers.categoryIdeaIHistoria);
         }
       } else if (whichCatToSumUp === 'firstCat') {
-        if (state.categoryWiedzaOOrganizacji) {
-          totalNum += sumItUp(state.categoryWiedzaOOrganizacji);
+        if (candidatesAnswers.categoryWiedzaOOrganizacji) {
+          totalNum += sumItUp(candidatesAnswers.categoryWiedzaOOrganizacji);
         }
       } else if (whichCatToSumUp === 'secondCat') {
-        if (state.categoryWychowanieMetodaMetodyki) {
-          totalNum += sumItUp(state.categoryWychowanieMetodaMetodyki);
+        if (candidatesAnswers.categoryWychowanieMetodaMetodyki) {
+          totalNum += sumItUp(candidatesAnswers.categoryWychowanieMetodaMetodyki);
         }
       } else if (whichCatToSumUp === 'thirdCat') {
-        if (state.categoryBezpieczenstwo) {
-          totalNum += sumItUp(state.categoryBezpieczenstwo);
+        if (candidatesAnswers.categoryBezpieczenstwo) {
+          totalNum += sumItUp(candidatesAnswers.categoryBezpieczenstwo);
         }
       } else if (whichCatToSumUp === 'fourthCat') {
-        if (state.categoryIdeaIHistoria) {
-          totalNum += sumItUp(state.categoryIdeaIHistoria);
+        if (candidatesAnswers.categoryIdeaIHistoria) {
+          totalNum += sumItUp(candidatesAnswers.categoryIdeaIHistoria);
         }
       }
 
@@ -846,6 +865,31 @@ export const store = new Vuex.Store({
             commit('changeLoadingState', false);
           }
         }).catch((err) => {
+          console.log(err);
+          commit('changeLoadingState', false);
+        })
+    },
+    fetchTestDetailsDB({
+      commit,
+      dispatch
+    }, candidateID) {
+      commit('changeLoadingState', true);
+      return firebase.database()
+        .ref(`candidatesTestsStack/${candidateID}`)
+        .once('value')
+        .then(data => {
+          let fetchedTestDetails = data.val();
+          commit('fetchTestDetailsDB', fetchedTestDetails);
+          let allQs = countNumberOfQuestions(fetchedTestDetails);
+          let allCorrAns = countCorrectAnswers(fetchedTestDetails);
+          commit('changeLoadingState', false);
+          let resultObj = {
+            "numOfAllQuestions": allQs,
+            "numOfCorrectAnswers": allCorrAns
+          }
+          return resultObj;
+        })
+        .catch((err) => {
           console.log(err);
           commit('changeLoadingState', false);
         })
@@ -868,3 +912,49 @@ function appendWhichAnswersChosenFieldToAllMCQuestions(allQuestionsObject) {
   }
   return allQuestionsObject;
 }
+
+
+function countNumberOfQuestions(allQuestionsObject) {
+  let masterCounter = 0;
+  for (const cat in allQuestionsObject) {
+    for (const question in allQuestionsObject[cat]) {
+      masterCounter += allQuestionsObject[cat][question].length;
+    }
+  }
+  console.log("Liczba wszystkich odpowiedzi");
+  console.log(masterCounter);
+  return masterCounter;
+}
+
+
+function countCorrectAnswers(allQuestionsObject, categoryToCount = 'all') {
+  let masterCounter = 0;
+  console.log("default parameter:");
+  console.log(categoryToCount);
+
+  if (categoryToCount === "all") {
+    for (const cat in allQuestionsObject) {
+      for (const questions in allQuestionsObject[cat]) {
+        allQuestionsObject[cat][questions].forEach(questionObj => {
+          if (questionObj.isAnswerCorrect === true) {
+            masterCounter++;
+          }
+        })
+      }
+    }
+  } else {
+    for (const questionsType in allQuestionsObject[categoryToCount]) {
+      allQuestionsObject[cat][questionsType].forEach(questionObj => {
+        if (questionObj.isAnswerCorrectisAnswerCorrect === true) {
+          masterCounter++;
+        }
+      })
+    }
+  }
+
+
+  console.log("Liczba poprawnych odpowiedzi");
+  console.log(masterCounter);
+  return masterCounter;
+}
+

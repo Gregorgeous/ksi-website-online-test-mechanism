@@ -27,7 +27,7 @@
               </v-flex>
             </v-card-title>
             <v-divider></v-divider>
-            <form action='submit' method="post">
+            <form @keyup.13="adminSignIn">
               <v-card-text>
                 <v-layout wrap>
                   <v-flex xs12>

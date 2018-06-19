@@ -11,7 +11,7 @@
     <v-container>
       <v-layout>
         <v-flex xs8 offset-xs2>
-          <v-card >
+          <v-card>
             <v-container>
               <v-layout row>
                 <v-flex>
@@ -47,11 +47,7 @@
                       </div>
                     </v-flex>
                     <v-flex sm12 md4>
-                      <v-card-media
-                      src="static/success-icon.png"
-                      height="125px"
-                      contain
-                      ></v-card-media>
+                      <v-card-media src="static/success-icon.png" height="125px" contain></v-card-media>
                     </v-flex>
                   </v-layout>
                 </v-card>
@@ -59,122 +55,115 @@
               <v-divider class="mt-3"></v-divider>
             </v-container>
 
-            <categoryResults
-            categoryTitle='Dział 1.: Wiedza o organizacji'
-            whatCatToCount= 'firstCat'
-            :categoryResults= 'candidatesAnswers.categoryWiedzaOOrganizacji'></categoryResults>
+            <categoryResults categoryTitle='Dział 1.: Wiedza o organizacji' whatCatToCount='firstCat' :categoryResults='candidatesAnswers.categoryWiedzaOOrganizacji'></categoryResults>
 
-            <categoryResults
-            categoryTitle='Dział 2.: Wychowanie. Metoda i metodyki harcerskie'
-            whatCatToCount= 'secondCat'
-            :categoryResults= 'candidatesAnswers.categoryWychowanieMetodaMetodyki'></categoryResults>
+            <categoryResults categoryTitle='Dział 2.: Wychowanie. Metoda i metodyki harcerskie' whatCatToCount='secondCat' :categoryResults='candidatesAnswers.categoryWychowanieMetodaMetodyki'></categoryResults>
 
-            <categoryResults
-            categoryTitle='Dział 3.: Bezpieczeństwo'
-            whatCatToCount= 'thirdCat'
-            :categoryResults= 'candidatesAnswers.categoryBezpieczenstwo'></categoryResults>
+            <categoryResults categoryTitle='Dział 3.: Bezpieczeństwo' whatCatToCount='thirdCat' :categoryResults='candidatesAnswers.categoryBezpieczenstwo'></categoryResults>
 
-            <categoryResults
-            categoryTitle='Dział 4.: Idea i historia'
-            whatCatToCount= 'fourthCat'
-            :categoryResults= 'candidatesAnswers.categoryIdeaIHistoria'></categoryResults>
+            <categoryResults categoryTitle='Dział 4.: Idea i historia' whatCatToCount='fourthCat' :categoryResults='candidatesAnswers.categoryIdeaIHistoria'></categoryResults>
 
             <v-container>
               <v-layout>
                 <v-flex>
-                  <v-btn primary @click='exitTheWholeTest'>Zakończ sprawdzanie i wróć do widoku głównego</v-btn>
+                  <v-btn primary @click='exitTheWholeTest'>Zakończ test całkowicie</v-btn>
                 </v-flex>
               </v-layout>
             </v-container>
-      </v-card>
-    </v-flex>
-  </v-layout>
-</v-container>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-container>
 
-</div>
+  </div>
 </template>
 
 <script>
-import categoryResults from './resultsPageComponents/categoryResults'
+  import categoryResults from './resultsPageComponents/categoryResults'
 
-export default {
-  name: 'hello',
-  components: {
-    categoryResults
-  },
-  data () {
-    return {
-      snackbar: false,
-      timeout:2000,
-      totalCorrectAnsNum: null,
-      totalNumOfQuestions: null
-    }
-  },
-  methods: {
-    comProp (tFQuestion) {
-      if (tFQuestion.isAnswerCorrect == null) {
-        return 'blue-grey'
-      }
-      else if (tFQuestion.isAnswerCorrect == false) {
-        return 'red'
-      }
-      else if (tFQuestion.isAnswerCorrect == true) {
-        return 'green'
-      }
-      else if (tFQuestion.isAnswerCorrect == -1) {
-        return 'grey lighten-1'
+  export default {
+    name: 'resultsPage',
+    components: {
+      categoryResults
+    },
+    data() {
+      return {
+        snackbar: false,
+        timeout: 2000,
+        totalCorrectAnsNum: null,
+        totalNumOfQuestions: null
       }
     },
-    exitTheWholeTest(){
-      this.$store.dispatch('deactivateCurrentCandidate');
-      this.$store.commit('endTheExam');
-      this.$router.push('/start-test');
-    }
-  },
-  computed: {
-    candidatesAnswers(){
-      return this.$store.state.candidatesAnswers;
+    methods: {
+      comProp(tFQuestion) {
+        if (tFQuestion.isAnswerCorrect == null) {
+          return 'blue-grey'
+        } else if (tFQuestion.isAnswerCorrect == false) {
+          return 'red'
+        } else if (tFQuestion.isAnswerCorrect == true) {
+          return 'green'
+        } else if (tFQuestion.isAnswerCorrect == -1) {
+          return 'grey lighten-1'
+        }
+      },
+      exitTheWholeTest() {
+        this.$store.dispatch('deactivateCurrentCandidate');
+        this.$store.commit('endTheExam');
+        this.$router.push('/start-test');
+      }
     },
-    ourUser () {
-      return this.$store.state.candidateDetails;
+    computed: {
+      candidatesAnswers() {
+        return this.$store.state.candidatesAnswers;
+      },
+      ourUser() {
+        return this.$store.state.candidateDetails;
+      }
+    },
+    mounted() {
+      // TODO: Review if all fetches necessary
+      this.$store.dispatch('fetchTheCandidateData')
+      .then(()=> {
+        this.$store.dispatch("fetchTheFinishedTest")
+        .then((data) => {
+          this.$store.dispatch('numberOfCorrectAnswers', 'all')
+            .then((theNumber) => {
+              this.totalCorrectAnsNum = theNumber;
+            });
+          this.$store.dispatch('totalNumberOfQuestion', 'all')
+            .then((theSum) => {
+              this.totalNumOfQuestions = theSum;
+            })
+        })
+      })
     }
-  },
-  created() {
-    this.$store.dispatch("fetchTheFinishedTest");
-    this.$store.dispatch('numberOfCorrectAnswers','all')
-    .then((theNumber) => {
-      this.totalCorrectAnsNum = theNumber;
-    });
-    this.$store.dispatch('totalNumberOfQuestion', 'all')
-    .then((theSum) => {
-      this.totalNumOfQuestions = theSum;
-    })
-    this.$store.dispatch('fetchTheCandidateData');
-    this.$store.dispatch('fetchQuestionsWhenPageRefreshed');
   }
-}
+
 </script>
 
 
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
+  h1,
+  h2 {
+    font-weight: normal;
+  }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
 
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
+  li {
+    display: inline-block;
+    margin: 0 10px;
+  }
 
-a {
-  color: #42b983;
-}
-v-card{
-  margin-top: 50%
-}
+  a {
+    color: #42b983;
+  }
+
+  v-card {
+    margin-top: 50%
+  }
+
 </style>

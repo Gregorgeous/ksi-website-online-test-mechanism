@@ -88,15 +88,17 @@
             </v-flex>
           </v-card-title>
           <v-divider></v-divider>
-          <form action='submit' method="post">
+          <form action='submit' method="post" autocomplete="new-password" >
+            <input autocomplete="false" name="hidden" type="text" style="display:none;">
             <v-card-text>
               <v-layout wrap>
                 <v-flex xs12>
-                  <v-text-field label="email" type='email' v-model="email">
+                  <v-text-field label="email" type='email' v-model="email" aria-autocomplete="new-password">
                   </v-text-field>
                 </v-flex>
                 <v-flex xs12>
-                  <v-text-field label="hasło" type='password' v-model="password">
+                  <input autocomplete="false" name="hidden" type="text" style="display:none;">
+                  <v-text-field label="hasło" type='password' v-model="password" aria-autocomplete="new-password">
                   </v-text-field>
                 </v-flex>
               </v-layout>
@@ -312,6 +314,12 @@
       }
     },
     watch: {
+      breakInTheTestDialog:function(){
+        if (this.breakInTheTestDialog) {
+          this.email = '';
+          this.password = '';
+        }
+      },
       myInitialTestTime: function () {
         console.log("I am triggered!");
 

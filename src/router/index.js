@@ -8,6 +8,7 @@ import examinersDashboard from '@/components/examinersDashboard'
 import AdminLoginView from '@/components/AdminLoginView'
 import AdminDashboard from '@/components/AdminDashboard'
 import testsDatabase from '@/components/testsDatabase'
+import testsDbCandidateDetails from '@/components/testsDbCandidateDetails'
 // temp solution
 import updateQuestionsDb from '@/components/questionDbUpdates/updateQuestionsDb'
 
@@ -15,7 +16,6 @@ Vue.use(Router)
 
 let router = new Router({
   routes: [
-    
     {
       path: '/',
       redirect: '/admin-dashboard'
@@ -37,6 +37,14 @@ let router = new Router({
       path: '/tests-database',
       name: 'testsDatabase',
       component: testsDatabase,
+      meta:{
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/tests-database/:candidate_id',
+      name: 'testsDbCandidateDetails',
+      component: testsDbCandidateDetails,
       meta:{
         requiresAuth: true
       }
@@ -65,14 +73,14 @@ let router = new Router({
         requiresAuth: true
       }
     },
-    {
-      path: '/update-questions-db',
-      name: 'updateQuestionsDb',
-      component: updateQuestionsDb,
-      meta:{
-        requiresAuth: true
-      }
-    },
+    // {
+    //   path: '/update-questions-db',
+    //   name: 'updateQuestionsDb',
+    //   component: updateQuestionsDb,
+    //   meta:{
+    //     requiresAuth: true
+    //   }
+    // },
     {
       path: '/examiners-dashboard',
       name: 'examinersDashboard',

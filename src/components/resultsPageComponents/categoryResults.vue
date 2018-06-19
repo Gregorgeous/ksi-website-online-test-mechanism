@@ -4,7 +4,7 @@
       <v-flex>
         <h4>{{categoryTitle}}</h4>
         <h5>
-          Wynik : {{correctAnswersNumber}} z {{thisCatTotalQuestionsNum}}
+          Wynik : {{displayNumOfCorrectAnswers}} z {{displayTotalNumOfQuestions}}
         </h5>
       </v-flex>
     </v-layout>
@@ -144,6 +144,14 @@
                         </v-flex>
                       </v-layout>
 
+                      <v-layout justify-center class="mt-2 pa-2">
+                        <v-flex>
+                          <h5 class="text-xs-center title amber--text ">
+                            Oceniono na: {{questionObj.questionAnswerScore}}pkt. (z {{questionObj.difficultyLevel}}pkt. możliwych)
+                          </h5>
+                        </v-flex>
+                      </v-layout>
+
 
                     </v-card-text>
                   </v-card>
@@ -236,7 +244,7 @@
                     <v-card-text primary-title class="pb-0">
                       <v-layout row>
                         <v-flex>
-                          <iframe class="text-xs-center" id="testImage" :src="questionObj.imageURL" width="100%" height="400px">
+                          <iframe class="text-xs-center" id="testImage" :src="questionObj.imageURLForThisTest" width="100%" height="400px">
                           </iframe>
                         </v-flex>
                       </v-layout>
@@ -288,43 +296,121 @@
         thisCatTotalQuestionsNum: null
       }
     },
-    created() {
-      this.correctShortAnswers = this.categoryResults.oneChoiceQuestions
-        .filter((questionObj) => {
-          return (questionObj.whichAnswerChosen === questionObj.correctAnswer || questionObj.isAnswerCorrect == true) &&
-            questionObj.whichAnswerChosen != null;
-        })
-        .map((GoodAnswer) => {
-          return GoodAnswer;
-        });
-      console.log("wszystko co jest zapisane w correctShortAnswers:");
-      console.log(this.correctShortAnswers);
+    computed: {
+      displayTotalNumOfQuestions() {
+        // IDEA: Because we need to count questions ASYNCHRONOUSLY (i.e. we need to count them only when they are fetched from firebase, otherwise it'll always only count the 4 dummy questions in vuex at existing at the component creation) we create 'allCatQs' variable - it doesn't do anything except it forces this computed method to re-run when this.categoryResults changes (i.e. when this.categoryResults changes from being a dummy object to an object with fetched questions). This way, the calculation of the questions is done twice - firstly at the component creation (counts 4 dummy questions in the vuex, we don't care) and then once the data is fetched (which is what we need).    
+        let allCatQs = this.categoryResults;
+
+        // IDEA: Because this component is used in 2 places with a slightly differrent logic (DB of tests view and end-test results view) we need a different to handle counting logic. So when the components are registered within the DB view, all are created with whatCatToCount prop equal to 'dbviewdefault', otherwise they're called differently, accordingly to the result page.    
+        if (this.whatCatToCount === "dbviewdefault") {
+          this.correctAnswersNumber = countCorrectAnswers(this.categoryResults, '');
+          this.thisCatTotalQuestionsNum = countNumberOfQuestions(this.categoryResults);
+        } else {
+          this.$store.dispatch('totalNumberOfQuestion', this.whatCatToCount)
+          .then((data) => {
+            this.thisCatTotalQuestionsNum = data;
+          })
+        }
+        return this.thisCatTotalQuestionsNum
+      },
+      displayNumOfCorrectAnswers() {
+        // IDEA: same as in 'displayTotalNumOfQuestions'
+        let allCatQs = this.categoryResults;
+        if (this.whatCatToCount === "dbviewdefault") {
+          this.correctAnswersNumber = countCorrectAnswers(this.categoryResults, '');
+        } else {
+          this.$store.dispatch('numberOfCorrectAnswers', this.whatCatToCount)
+          .then((data) => {
+            this.correctAnswersNumber = data;
+          })
+        }
+        return this.correctAnswersNumber
+      }
+    },
+    mounted() {
+
+      // this.correctShortAnswers = this.categoryResults.oneChoiceQuestions
+      //   .filter((questionObj) => {
+      //     return (questionObj.whichAnswerChosen === questionObj.correctAnswer || questionObj.isAnswerCorrect == true) &&
+      //       questionObj.whichAnswerChosen != null;
+      //   })
+      //   .map((GoodAnswer) => {
+      //     return GoodAnswer;
+      //   });
+      // console.log("wszystko co jest zapisane w correctShortAnswers:");
+      // console.log(this.correctShortAnswers);
 
 
-      this.wrongShortAnswers = this.categoryResults.oneChoiceQuestions
-        .filter((questionObj) => {
-          return (questionObj.whichAnswerChosen !== questionObj.correctAnswer || questionObj.isAnswerCorrect == false) &&
-            questionObj.whichAnswerChosen !== null;
-        })
-        .map((wrongAnswer) => {
-          return wrongAnswer;
-        });
-      console.log("wszystko co jest zapisane w wrongShortAnswers:");
-      console.log(this.wrongShortAnswers);
+      // this.wrongShortAnswers = this.categoryResults.oneChoiceQuestions
+      //   .filter((questionObj) => {
+      //     return (questionObj.whichAnswerChosen !== questionObj.correctAnswer || questionObj.isAnswerCorrect == false) &&
+      //       questionObj.whichAnswerChosen !== null;
+      //   })
+      //   .map((wrongAnswer) => {
+      //     return wrongAnswer;
+      //   });
+      // console.log("wszystko co jest zapisane w wrongShortAnswers:");
+      // console.log(this.wrongShortAnswers);
 
+      if (this.whatCatToCount === "dbviewdefault") {
+        this.correctAnswersNumber = countCorrectAnswers(this.categoryResults, '');
+        this.thisCatTotalQuestionsNum = countNumberOfQuestions(this.categoryResults);
+      } else {
+        this.$store.dispatch('numberOfCorrectAnswers', this.whatCatToCount)
+          .then((theNumber) => {
+            this.correctAnswersNumber = theNumber;
+          });
+        this.$store.dispatch('totalNumberOfQuestion', this.whatCatToCount)
+          .then((theSum) => {
+            this.thisCatTotalQuestionsNum = theSum;
+          })
+      }
 
-
-
-      this.$store.dispatch('numberOfCorrectAnswers', this.whatCatToCount)
-        .then((theNumber) => {
-          this.correctAnswersNumber = theNumber;
-        });
-      this.$store.dispatch('totalNumberOfQuestion', this.whatCatToCount)
-        .then((theSum) => {
-          this.thisCatTotalQuestionsNum = theSum;
-        })
 
     }
+  }
+
+  function countNumberOfQuestions(allQuestionsObject) {
+    let masterCounter = 0;
+    for (const questionsType in allQuestionsObject) {
+      masterCounter += allQuestionsObject[questionsType].length;
+    }
+    console.log("Liczba wszystkich odpowiedzi");
+    console.log(masterCounter);
+    return masterCounter;
+  }
+
+  function countCorrectAnswers(allQuestionsObject, categoryToCount = 'all') {
+    let masterCounter = 0;
+
+    console.log("jestem w kategorii: ");
+    console.log(allQuestionsObject);
+
+
+    if (categoryToCount === "all") {
+      for (const cat in allQuestionsObject) {
+        for (const questions in allQuestionsObject[cat]) {
+          allQuestionsObject[cat][questions].forEach(questionObj => {
+            if (questionObj.isAnswerCorrect === true) {
+              masterCounter++;
+            }
+          })
+        }
+      }
+    } else {
+      for (const questionsType in allQuestionsObject) {
+        allQuestionsObject[questionsType].forEach(questionObj => {
+          if (questionObj.isAnswerCorrect === true) {
+            masterCounter++;
+          }
+        })
+      }
+    }
+
+
+    console.log("Liczba poprawnych odpowiedzi");
+    console.log(masterCounter);
+    return masterCounter;
   }
 
 </script>

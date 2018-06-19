@@ -235,7 +235,7 @@
         snackbar: false,
         refreshedDuringGrading: false,
         dialog: false,
-        timeout: 2000,
+        timeout: 1300,
         MCQestionsVisible: false,
         multiChoiceQuestionsPanel: [
           "Dział 1.: Wiedza o organizacji",
@@ -313,7 +313,7 @@
         this.$store.dispatch('deactivateCurrentExamVersion');
         setTimeout(() => {
           this.$router.push('/results-page');
-        }, 2500);
+        }, 1700);
         // BELOW is only for updating view in Vue dev panel
         this.$store.commit('gradeTFQuestions');
       }
