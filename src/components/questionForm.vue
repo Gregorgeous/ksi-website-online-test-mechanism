@@ -230,7 +230,6 @@
               password: this.password
             })
             .then((result) => {
-              console.log("result of promise", result);
               if (result === false) {
                 this.errorInForm = true;
                 this.errorMessage = 'Hasło lub email się nie zgadzają';
@@ -261,17 +260,11 @@
       },
       checkTheAnswers() {
         this.$store.commit('checkTheAnswers');
-        console.log('sprawdzam !');
-
-        console.log("przenoszę na inną stronę");
         this.$router.push('/examiners-dashboard');
       },
       saveTheTest() {
         this.dialog = false;
         this.$store.commit('checkTheAnswers');
-        console.log('sprawdzam !');
-
-        console.log("przenoszę na inną stronę");
         this.$router.push('/examiners-dashboard');
       }
     },
@@ -321,8 +314,6 @@
         }
       },
       myInitialTestTime: function () {
-        console.log("I am triggered!");
-
         if (!this.TestHasStarted) {
           this.TestHasStarted = true;
           this.testIsStillLoadingUp = false;
