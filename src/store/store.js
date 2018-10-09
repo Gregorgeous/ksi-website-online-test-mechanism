@@ -19,7 +19,7 @@ export const store = new Vuex.Store({
       id: null
     },
     fetchingTestDone: false,
-    totalExamTime: 2,
+    totalExamTime: 30,
     examTimeLeft: 0,
     categoryWiedzaOOrganizacji: {},
     categoryWychowanieMetodaMetodyki: {},
@@ -190,10 +190,6 @@ export const store = new Vuex.Store({
     }
   },
   mutations: {
-    testMut() {
-      let aa = 'aa';
-      return aa;
-    },
     fetchTestDetailsDB(state, TestDetails) {
       state.testDetailsInDBView = TestDetails;
     },
@@ -353,7 +349,7 @@ export const store = new Vuex.Store({
     initializeCandidate({
       state
     }) {
-      // IDEA: here we initiale cand in the DB, meaning, we set the data the user gave us at the home page as the "currentActiveCandidate" node in Firebase DB. From now on we always have the data of the user at the exam session, even if we lose connection/refresh the page.
+      // IDEA: here we initialise cand in the DB, meaning, we set the data the user gave us at the home page as the "currentActiveCandidate" node in Firebase DB. From now on we always have the data of the user at the exam session, even if we lose connection/refresh the page.
       let currentCandidate = state.candidateDetails;
       firebase.database().ref('currentActiveCandidate').set(currentCandidate);
     },
@@ -564,9 +560,10 @@ export const store = new Vuex.Store({
     }) {
       // FIXME: if by any chance there will be a new candidate with the same name as someone already in the db, the new candidate will override the older db candidates!
       let userId = state.candidateDetails.userID;
+      // NOTE: In theory this check below will never occur, as there is a form validation preventing user from not providing their name (thus creating ID) BUT it's good to have it anyway.
       if (userId == '' || userId == null) {
-        var num = Math.floor((Math.random() * 2000) + 1);
-        userId = `NotNamedCandidate${num}`;
+        var num = Math.floor((Math.random() * 20000) + 1);
+        userId = `probantNiePodalImienia${num}`;
         commit('changeUserIdIfNull', userId);
       }
 
@@ -921,17 +918,12 @@ function countNumberOfQuestions(allQuestionsObject) {
       masterCounter += allQuestionsObject[cat][question].length;
     }
   }
-  console.log("Liczba wszystkich odpowiedzi");
-  console.log(masterCounter);
   return masterCounter;
 }
 
 
 function countCorrectAnswers(allQuestionsObject, categoryToCount = 'all') {
   let masterCounter = 0;
-  console.log("default parameter:");
-  console.log(categoryToCount);
-
   if (categoryToCount === "all") {
     for (const cat in allQuestionsObject) {
       for (const questions in allQuestionsObject[cat]) {
@@ -952,9 +944,6 @@ function countCorrectAnswers(allQuestionsObject, categoryToCount = 'all') {
     }
   }
 
-
-  console.log("Liczba poprawnych odpowiedzi");
-  console.log(masterCounter);
   return masterCounter;
 }
 
