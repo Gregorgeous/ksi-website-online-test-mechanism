@@ -26,18 +26,18 @@
                   <v-radio :label="oCQuestion.correctAnswer" :value="oCQuestion.correctAnswer"></v-radio>
                 </v-flex>
 
-                <v-flex ref="OCQAnswer" >
-                  <v-radio  :label="oCQuestion.answer2" :value="oCQuestion.answer2">
+                <v-flex ref="OCQAnswer">
+                  <v-radio :label="oCQuestion.answer2" :value="oCQuestion.answer2">
                   </v-radio>
                 </v-flex>
 
-                <v-flex ref="OCQAnswer"  v-if="oCQuestion.answer3">
-                  <v-radio  :label="oCQuestion.answer3" :value="oCQuestion.answer3">
+                <v-flex ref="OCQAnswer" v-if="oCQuestion.answer3">
+                  <v-radio :label="oCQuestion.answer3" :value="oCQuestion.answer3">
                   </v-radio>
                 </v-flex>
 
-                <v-flex ref="OCQAnswer"  v-if="oCQuestion.answer4">
-                  <v-radio  :label="oCQuestion.answer4" :value="oCQuestion.answer4">
+                <v-flex ref="OCQAnswer" v-if="oCQuestion.answer4">
+                  <v-radio :label="oCQuestion.answer4" :value="oCQuestion.answer4">
                   </v-radio>
                 </v-flex>
               </v-layout>
@@ -58,26 +58,30 @@
             </v-layout>
             <v-layout row>
               <v-flex>
-                <p v-if="mCQuestion.whichAnswersChosen">
-                  Wybrano: {{mCQuestion.whichAnswersChosen}}
+                <p v-if="displayArrayAnswersCorrectly(mCQuestion.whichAnswersChosen)">
+                  Wybrano: {{mCQuestion.whichAnswersChosen.join()}}
                 </p>
               </v-flex>
             </v-layout>
             <v-divider></v-divider>
+
+            <v-layout>
+              <v-flex>
+                <v-checkbox v-for="(trueAnswer,index) in mCQuestion.correctAnswers" :key="index" :label="trueAnswer"
+                  v-model="mCQuestion.whichAnswersChosen" :value='trueAnswer'>
+                </v-checkbox>
+
+                <v-checkbox v-for="(falseAnswer,index) in mCQuestion.incorrectAnswers" :key="index" :label="falseAnswer"
+                  v-model="mCQuestion.whichAnswersChosen" :value='falseAnswer'>
+                </v-checkbox>
+
+              </v-flex>
+
+            </v-layout>
+
+
           </v-card-text>
-          <v-card-actions>
-            <v-flex offset-md1>
-              <v-radio-group row>
-                <v-checkbox :label="mCQuestion.answer1" v-model="mCQuestion.answer1State"></v-checkbox>
-                <v-checkbox :label="mCQuestion.answer2" v-model="mCQuestion.answer2State">
-                </v-checkbox>
-                <v-checkbox :label="mCQuestion.answer3" v-model="mCQuestion.answer3State">
-                </v-checkbox>
-                <v-checkbox :label="mCQuestion.answer4" v-model="mCQuestion.answer4State">
-                </v-checkbox>
-              </v-radio-group>
-            </v-flex>
-          </v-card-actions>
+
         </v-card>
       </v-flex>
     </v-layout>
@@ -325,8 +329,8 @@
         this.snackbar = true;
       }
     },
-    mounted(){
-      setTimeout( () => {
+    mounted() {
+      setTimeout(() => {
         let test = this.$refs;
         for (const key in test) {
           if (test.hasOwnProperty(key) && key == 'OCQAnswer') {
@@ -337,7 +341,7 @@
             }
           }
         }
-      },2000)
+      }, 2000)
     }
   }
 
