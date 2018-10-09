@@ -5,6 +5,9 @@ if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV)
 }
 
+// [CUSTOM] To enable the HTTPS on localhost
+const https = require('https')
+const fs = require('fs') 
 var opn = require('opn')
 var path = require('path')
 var express = require('express')
@@ -63,7 +66,7 @@ app.use(hotMiddleware)
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
 app.use(staticPath, express.static('./static'))
 
-var uri = 'http://localhost:' + port
+var uri = 'https://localhost:' + port
 
 var _resolve
 var readyPromise = new Promise(resolve => {
@@ -80,7 +83,10 @@ devMiddleware.waitUntilValid(() => {
   _resolve()
 })
 
-var server = app.listen(port)
+var server = https.createServer({
+  key: fs.readFileSync('./certs/server.key'),
+  cert: fs.readFileSync('./certs/server.cert')
+}, app).listen(port);
 
 module.exports = {
   ready: readyPromise,
