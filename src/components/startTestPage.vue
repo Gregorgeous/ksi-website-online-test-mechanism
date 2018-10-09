@@ -15,7 +15,8 @@
           <v-card-title>
             <div class="headline">Nastąpił błąd połączenia z bazą danych online</div>
           </v-card-title>
-          <v-card-text>Spróbuj odświeżyc stronę. Jeśli błąd będzie się dalej powtarzac, zmień przeglądarkę na dowolną inną niż ta, której
+          <v-card-text>Spróbuj odświeżyc stronę. Jeśli błąd będzie się dalej powtarzac, zmień przeglądarkę na dowolną
+            inną niż ta, której
             obecnie używasz. </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -25,8 +26,8 @@
       </v-dialog>
     </v-layout>
 
-    <v-layout v-else>
-      <v-flex xs12 md3 offset-md4 sm4 offset-sm3>
+    <v-layout v-else justify-center>
+      <v-flex xs12 sm5 md4>
         <v-card class="mp-5 mt-5">
           <v-card-title primary-title>
             <v-flex>
@@ -70,6 +71,36 @@
         </v-card>
       </v-flex>
     </v-layout>
+
+    <v-layout class="mt-5" justify-center="">
+      <v-flex xs12 sm6>
+        <v-card>
+          <v-card-title primary-title>
+            <div class="headline">Instrukcje dot. testu</div>
+            <v-spacer></v-spacer>
+            <v-btn icon @click.native="show = !show">
+              <v-icon>{{ show ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-slide-y-transition>
+            <v-card-text class="text-xs-left" v-show="show">
+              1. <strong> Pamiętaj aby zapisywać swoje odpowiedzi </strong> - na końcu każdej kategorii znajduje się
+              ciemny przycisk "zapisz swoje odpowiedzi z tego działu". Jeśli tego nie zrobisz, a klikniesz przycisk
+              zakończenia testu (lub odświeżysz stronę),stracisz swoje odpowiedzi
+              <br>
+              2. <strong> Zalecamy unikać odświeżania strony</strong> - Test zapisuje twoje odpowiedzi bez konieczności
+              odświeżania strony, natomiast za każdym razem gdy to robisz, musisz pamiętać by mieć zapisane odpowiedzi
+              (patrz pkt. 1)
+              <br>
+              3. <strong> Podczas testu jest możliwość jego zatrzymania</strong> - w prawym górnym rogu znajdować się
+              będzie przycisk zatrzymania czasu, pamiętaj że każde zatrzymanie czasu wymaga autoryzacji osoby, która
+              ocenia twój test
+            </v-card-text>
+          </v-slide-y-transition>
+        </v-card>
+      </v-flex>
+    </v-layout>
+
   </div>
 </template>
 
@@ -80,6 +111,7 @@
     name: 'hello',
     data() {
       return {
+        show: false,
         errorInForm: false,
         errorMessage: null,
         nameRules: [v => !!v || "name is required"]
@@ -88,17 +120,18 @@
     methods: {
       startTheTest() {
         // FIXME: no check for previous candidate with same name, see method 'uploadCandsAnswersToDb' in vuex actions.
-        if (this.thisCandidate.firstName == '' || this.thisCandidate.lastName == '' || this.thisCandidate.scoutGroup == '') {
+        if (this.thisCandidate.firstName == '' || this.thisCandidate.lastName == '' || this.thisCandidate.scoutGroup ==
+          '') {
           this.errorInForm = true;
           this.errorMessage = 'Jedno lub więcej pól nie zostało wypełnionych!';
-        }else{
-        this.thisCandidate.userID = `${this.thisCandidate.firstName} ${this.thisCandidate.lastName}`
-        // console.log(this.thisCandidate);
-        this.$store.dispatch('initializeCandidate');
+        } else {
+          this.thisCandidate.userID = `${this.thisCandidate.firstName} ${this.thisCandidate.lastName}`
+          // console.log(this.thisCandidate);
+          this.$store.dispatch('initializeCandidate');
 
-        this.$store.dispatch('CreateNewExamQuestionStack');
-        this.$router.push('/question-form');
-        }      
+          this.$store.dispatch('CreateNewExamQuestionStack');
+          this.$router.push('/question-form');
+        }
       }
     },
     computed: {
