@@ -365,8 +365,6 @@
             this.thisCatTotalQuestionsNum = theSum;
           })
       }
-
-
     }
   }
 
@@ -375,18 +373,11 @@
     for (const questionsType in allQuestionsObject) {
       masterCounter += allQuestionsObject[questionsType].length;
     }
-    console.log("Liczba wszystkich odpowiedzi");
-    console.log(masterCounter);
     return masterCounter;
   }
 
   function countCorrectAnswers(allQuestionsObject, categoryToCount = 'all') {
     let masterCounter = 0;
-
-    console.log("jestem w kategorii: ");
-    console.log(allQuestionsObject);
-
-
     if (categoryToCount === "all") {
       for (const cat in allQuestionsObject) {
         for (const questions in allQuestionsObject[cat]) {
@@ -406,10 +397,6 @@
         })
       }
     }
-
-
-    console.log("Liczba poprawnych odpowiedzi");
-    console.log(masterCounter);
     return masterCounter;
   }
 
