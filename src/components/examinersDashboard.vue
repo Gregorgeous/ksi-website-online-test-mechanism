@@ -313,7 +313,7 @@
         this.$store.dispatch('deactivateCurrentExamVersion');
         setTimeout(() => {
           this.$router.push('/results-page');
-        }, 1700);
+        }, 1400);
         // BELOW is only for updating view in Vue dev panel
         this.$store.commit('gradeTFQuestions');
       }
