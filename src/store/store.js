@@ -476,7 +476,7 @@ export const store = new Vuex.Store({
 
       fetchAllQuestionsFromDb().then((dbQuestionsObject) => {
 
-        // HERE I NEED TO ADD A FIELD 'whichAnswersChosen' TO ALL MULTICHOICE QUESTIONS IN THE TEST (sadly, firebase doesn't add empty arrays in DB - although some oddly have this field with an empty array- and I don't want to modify all the mcquestions in the DB)
+        //IDEA: HERE I NEED TO ADD A FIELD 'whichAnswersChosen' TO ALL MULTICHOICE QUESTIONS IN THE TEST (sadly, firebase doesn't add empty arrays in DB - although some oddly have this field with an empty array- and I don't want to modify all the mcquestions in the DB)
         dbQuestionsObject = appendWhichAnswersChosenFieldToAllMCQuestions(dbQuestionsObject);
 
 
