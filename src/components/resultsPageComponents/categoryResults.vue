@@ -30,7 +30,7 @@
                     </v-container>
                     <v-divider></v-divider>
                     <v-layout>
-                      Twoja odpowiedź:
+                      Odpowiedź:
                     </v-layout>
                     <v-container>
                       <v-layout>
@@ -60,7 +60,7 @@
                     </v-container>
                     <v-divider></v-divider>
                     <v-layout>
-                      Twoja odpowiedź:
+                      Odpowiedź:
                     </v-layout>
                     <v-container>
                       <v-layout>
@@ -209,7 +209,8 @@
                         </v-flex>
                       </v-layout>
                       <v-divider></v-divider>
-                      <v-text-field :name="index" label="Twoja odpowiedź:" textarea disabled dark v-model="questionObj.candidatesAnswer"></v-text-field>
+                      <v-text-field :name="index" label="Odpowiedź:" textarea disabled dark v-model="questionObj.candidatesAnswer"></v-text-field>
+                      <v-text-field v-if='questionObj.examinersNotes!=="" ' :name="index" label="Uwagi sprawdzającego:" textarea disabled dark v-model="questionObj.examinersNotes"></v-text-field>
                     </v-card-text>
                   </v-card>
                 </v-flex>
@@ -256,7 +257,7 @@
                         </v-flex>
                       </v-layout>
                       <v-divider></v-divider>
-                      <v-text-field :name="index" label="Twoja odpowiedź:" textarea disabled dark v-model="questionObj.candidatesAnswer"></v-text-field>
+                      <v-text-field :name="index" label="Odpowiedź:" textarea disabled dark v-model="questionObj.candidatesAnswer"></v-text-field>
                     </v-card-text>
                   </v-card>
                 </v-flex>
