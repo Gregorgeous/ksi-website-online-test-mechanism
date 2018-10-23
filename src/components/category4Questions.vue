@@ -320,7 +320,8 @@
               difficultyLevel: this.textFieldQuestions[i].difficultyLevel,
               starredQuestion: this.textFieldQuestions[i].starredQuestion,
               candidatesAnswer: this.textFieldQuestions[i].candidatesAnswer,
-              isAnswerCorrect: null
+              isAnswerCorrect: null,
+              examinersNotes: ""
             }
             categoryIdeaIHistoriaAnswers.textFieldQuestions.push(dataFormattedObject);
           }
