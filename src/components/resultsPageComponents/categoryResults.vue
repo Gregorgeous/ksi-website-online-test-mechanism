@@ -258,6 +258,8 @@
                       </v-layout>
                       <v-divider></v-divider>
                       <v-text-field :name="index" label="Odpowiedź:" textarea disabled dark v-model="questionObj.candidatesAnswer"></v-text-field>
+                      <p class="title" style="text-decoration: underline; text-align: center;">Sprawdzający ma uwagi do tego pytania</p>
+                      <v-text-field v-if='questionObj.examinersNotes!=="" ' :name="index" label="Uwagi sprawdzającego:" textarea disabled dark v-model="questionObj.examinersNotes"></v-text-field>
                     </v-card-text>
                   </v-card>
                 </v-flex>
