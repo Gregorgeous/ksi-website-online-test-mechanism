@@ -266,15 +266,7 @@
       }
     },
     methods: {
-      logging() {
-        console.log(this.refreshedDuringGrading);
-      },
       MCQRadioBtnColour(question,grade){
-        console.log("jestem w MCQRadioBtnColour:");
-        console.log("question.difficultyLevel:");
-        console.log(question.difficultyLevel);        
-        console.log("grade:");
-        console.log(grade);
 
         if (grade/question.difficultyLevel > 0.66){
           question.isAnswerCorrect = true;
@@ -297,15 +289,12 @@
       },
       makeAnswerWrong(candsAnswer) {
         candsAnswer.isAnswerCorrect = false;
-        console.log(candsAnswer);
       },
       makeAnswerCorrect(candsAnswer) {
         candsAnswer.isAnswerCorrect = true;
-        console.log(candsAnswer);
       },
       makeAnswerNull(candsAnswer) {
         candsAnswer.isAnswerCorrect = -1;
-        console.log(candsAnswer);
       },
       comProp(tFQuestion) {
         if (tFQuestion.isAnswerCorrect == null) {
@@ -346,7 +335,6 @@
         }
       },
       formatExpansionPanelTitleCorrectly(key) {
-        console.log(key);
         return key.toString();
       },
       allCandidatesAnswers() {
@@ -413,8 +401,6 @@
       cat1ImageBasedAnswers.forEach(object => {
         this.expansionPanels.categoryWiedzaOOrganizacji.push(object);
       })
-      // console.log(this.expansionPanels.categoryWiedzaOOrganizacji);
-
 
       var cat2TextFieldAnswers = this.candidatesAnswersInCategoryWychowanieMetodaMetodyki.textFieldQuestions;
       var cat2ImageBasedAnswers =
@@ -422,7 +408,6 @@
       cat2TextFieldAnswers.forEach(object => {
         this.expansionPanels.categoryWychowanieMetodaMetodyki.push(object);
       })
-      // console.log(this.expansionPanels.categoryWychowanieMetodaMetodyki);
       cat2ImageBasedAnswers.forEach(object => {
         this.expansionPanels.categoryWychowanieMetodaMetodyki.push(object);
       })
@@ -437,7 +422,6 @@
       cat3ImageBasedAnswers.forEach(object => {
         this.expansionPanels.categoryBezpieczenstwo.push(object);
       })
-      // console.log(this.expansionPanels.categoryBezpieczenstwo);
 
       var cat4TextFieldAnswers = this.candidatesAnswersInCategoryIdeaIHistoria.textFieldQuestions;
       var cat4ImageBasedAnswers = this.candidatesAnswersInCategoryIdeaIHistoria.imageBasedQuestions;
@@ -448,10 +432,7 @@
       cat4ImageBasedAnswers.forEach(object => {
         this.expansionPanels.categoryIdeaIHistoria.push(object);
       })
-      // console.log(this.expansionPanels.categoryIdeaIHistoria);
 
-
-      
     }
   }
 
