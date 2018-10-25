@@ -14,7 +14,8 @@
           <v-card-title>
             <div class="headline">BŁĄD! Odświeżyłeś stronę w czasie sprawdzania egzaminu</div>
           </v-card-title>
-          <v-card-text>Aby kontynuować, należy cofnąć do poprzedniego widoku a następnie ponownie kliknąć "zakończ test" </v-card-text>
+          <v-card-text>Aby kontynuować, należy cofnąć do poprzedniego widoku a następnie ponownie kliknąć "zakończ
+            test" </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn class="green--text darken-1" flat="flat" @click="refreshedDuringGrading = false">zamknij</v-btn>
@@ -81,12 +82,13 @@
 
         <v-expansion-panel expand v-if="thereAreMCQuestionsInTest && MCQestionsVisible">
           <v-expansion-panel-content v-for="(category, key, index)  in allCandidatesAnswers" :key="index">
-            <div slot="header" v-if="category.multiChoiceQuestions && category.multiChoiceQuestions.length > 0  "> {{multiChoiceQuestionsPanel[index]}} </div>
+            <div slot="header" v-if="category.multiChoiceQuestions && category.multiChoiceQuestions.length > 0  ">
+              {{multiChoiceQuestionsPanel[index]}} </div>
 
             <v-card v-for="(question,index) in category.multiChoiceQuestions" :key="question.question" v-if="category.multiChoiceQuestions">
               <v-card-title class="brown lighten-1 white--text pb-0">
                 <h5>
-                 Pytanie {{index+1}}.
+                  Pytanie {{index+1}}.
                 </h5>
               </v-card-title>
               <v-card-text>
@@ -127,16 +129,17 @@
                 </v-layout>
 
                 <v-layout justify-center="">
-                  <p >Oceń odpowiedź:</p>
+                  <p>Oceń odpowiedź:</p>
                 </v-layout>
-                
+
 
                 <v-layout justify-center>
-                    <v-flex sm10 offset-sm2>
-                  <v-radio-group v-model="question.questionAnswerScore" row>
-                      <v-radio v-for="mark in question.difficultyLevel+1" :color='MCQRadioBtnColour(question,question.questionAnswerScore)' :key="mark" :label="(mark-1).toString()" :value="mark-1"></v-radio>
-                  </v-radio-group>
-                    </v-flex>
+                  <v-flex sm10 offset-sm2>
+                    <v-radio-group v-model="question.questionAnswerScore" row>
+                      <v-radio v-for="mark in question.difficultyLevel+1" :color='MCQRadioBtnColour(question,question.questionAnswerScore)'
+                        :key="mark" :label="(mark-1).toString()" :value="mark-1"></v-radio>
+                    </v-radio-group>
+                  </v-flex>
                 </v-layout>
               </v-card-text>
               <v-divider></v-divider>
@@ -266,18 +269,17 @@
       }
     },
     methods: {
-      MCQRadioBtnColour(question,grade){
-
-        if (grade/question.difficultyLevel > 0.66){
+      MCQRadioBtnColour(question, grade) {
+        if (grade / question.difficultyLevel > 0.66) {
           question.isAnswerCorrect = true;
           return 'green accent-4'
-        }else if (grade/question.difficultyLevel >= 0.5){
+        } else if (grade / question.difficultyLevel >= 0.5) {
           question.isAnswerCorrect = true;
           return 'light-green lighten-1'
-        }else if(grade/question.difficultyLevel >= 0.3){
+        } else if (grade / question.difficultyLevel >= 0.3) {
           question.isAnswerCorrect = -1;
           return 'deep-orange lighten-1'
-        }else{
+        } else {
           question.isAnswerCorrect = false;
           return 'red'
         }
@@ -352,7 +354,7 @@
       candidatesAnswersInCategoryIdeaIHistoria() {
         return this.$store.state.candidatesAnswers.categoryIdeaIHistoria;
       },
-      MCQsTotalNumber(){
+      MCQsTotalNumber() {
         return this.$store.state.allMCQuestions;
       },
       oneChoiceQuestionsResults() {
