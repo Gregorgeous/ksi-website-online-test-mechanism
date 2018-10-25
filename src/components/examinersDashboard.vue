@@ -183,6 +183,12 @@
                     </v-layout>
                     <v-divider></v-divider>
                     <v-text-field :name="index" label="Tak odpowiedział kandydat:" textarea disabled dark v-model="tFQuestion.candidatesAnswer"></v-text-field>
+                    <v-btn class="elevation-8 blue accent-2 white--text" block @click="showNotesField(tFQuestion)">
+                      <span> Dodaj własne uwagi</span>
+                    </v-btn>
+                    <!-- Text field for examiner's extra notes/thoughts -->
+                    <v-text-field v-show='tFQuestion.examinersNotes!=""' label="Uwagi sprawdzającego" v-model="tFQuestion.examinersNotes"
+                      textarea dark></v-text-field>
                   </v-card-text>
                   <v-card-actions>
                     <v-layout row wrap justify-space-between>
@@ -282,6 +288,11 @@
         }else{
           question.isAnswerCorrect = false;
           return 'red'
+        }
+      },
+      showNotesField(candsAnswer) {
+        if (!candsAnswer.examinersNotes) {
+          candsAnswer.examinersNotes = ' ';
         }
       },
       makeAnswerWrong(candsAnswer) {
