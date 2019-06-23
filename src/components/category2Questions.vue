@@ -186,31 +186,38 @@
 			</v-flex>
 		</v-layout>
 
-    <v-layout class="mt-4" v-for="tFQuestion in categoryWychowanieMetodaMetodyki.textFieldQuestions" :key="tFQuestion.question">
-      <v-flex>
-        <v-card hover>
-          <v-card-text primary-title class="pb-0">
-            <v-layout row>
-              <v-flex>
-                <h5 v-if="tFQuestion.variant2">
-                  {{tFQuestion.variant2}}
-                  <!-- TODO: make it so it displays random variants of the question, not just the second one -->
-                </h5>
-                <h5 v-else>
-                  {{tFQuestion.question}}
-                </h5>
-              </v-flex>
-            </v-layout>
-            <v-divider></v-divider>
-          </v-card-text>
-          <v-card-actions>
-            <v-flex>
-              <v-text-field label="Tu odpowiedz na pytanie" textarea v-model="tFQuestion.candidatesAnswer"></v-text-field>
-            </v-flex>
-          </v-card-actions>
-        </v-card>
-      </v-flex>
-    </v-layout>
+		<v-layout class="mt-4"
+		 v-for="tFQuestion in categoryWychowanieMetodaMetodyki.textFieldQuestions"
+		 :key="tFQuestion.question">
+			<v-flex>
+				<v-card hover>
+					<v-card-text primary-title
+					 class="pb-0">
+						<v-layout row>
+							<v-flex>
+								<h5 v-if="tFQuestion.variant2">
+									{{tFQuestion.variant2}}
+									{{drawWhichTFQuestionVariantToShow(tFQuestion)}}
+									<!-- TODO: make it so it displays random variants of the question, not just the second one -->
+									<!-- TODO: Steps to do: 1. Create tFQuestion.howManyVariants variable on Firebase. 2.Darw a random one-off draw and assign the results to tFQuestion.drawResult (how will it know to reach it ??) 3. show the variant here -->
+								</h5>
+								<h5 v-else>
+									{{tFQuestion.question}}
+								</h5>
+							</v-flex>
+						</v-layout>
+						<v-divider></v-divider>
+					</v-card-text>
+					<v-card-actions>
+						<v-flex>
+							<v-text-field label="Tu odpowiedz na pytanie"
+							 textarea
+							 v-model="tFQuestion.candidatesAnswer"></v-text-field>
+						</v-flex>
+					</v-card-actions>
+				</v-card>
+			</v-flex>
+		</v-layout>
 
 		<v-layout class="mt-3">
 			<v-flex>
@@ -231,7 +238,6 @@
 			 class="pink--text"
 			 @click.native="snackbar = false">Close</v-btn>
 		</v-snackbar>
-
 
 	</div>
 </template>
@@ -270,16 +276,22 @@ export default {
     }
   },
   methods: {
-    displayArrayAnswersCorrectly(arrayAnswer) {
-      console.log(arrayAnswer);
-      if (arrayAnswer) {
-        if (arrayAnswer.length == 0) {
-          return false;
+    drawWhichTFQuestionVariantToShow(tFQuestion) {
+      // Count how many variants are there (as we could save additional datafield for each multiple-variants question but that would require changing the already deployed database of questions and introduce room for error in integrity ... )
+      let count = 1;
+      while (true) {
+        if (tFQuestion[`variant${count}`]) {
+          count++;
         } else {
-          return true;
+          break;
         }
+      }
+      randomDraw = Math.floor(Math.random() * count + 1);
+      tFQuestion.whichVariantDrawn = randomDraw;
+      if (randomDraw === 0) {
+        return tFQuestion.question;
       } else {
-        return false;
+        return tFQuestion[`variant${randomDraw}`];
       }
     },
     displayArrayAnswersCorrectly(arrayAnswer) {
@@ -297,91 +309,117 @@ export default {
     saveTheAnswers() {
       let categoryWychowanieMetodaMetodykiAnswers = {
         oneChoiceQuestions: [],
-          multiChoiceQuestions:[],
-          videoBasedQuestions: [],
-          imageBasedQuestions: [],
-          textFieldQuestions: []
-        };
+        multiChoiceQuestions: [],
+        videoBasedQuestions: [],
+        imageBasedQuestions: [],
+        textFieldQuestions: []
+      };
 
-         if (this.oneChoiceQuestions) {
-          for (var i = 0; i < this.oneChoiceQuestions.length; i++) {
-            let dataFormattedObject = {
-              question: this.oneChoiceQuestions[i].question,
-              difficultyLevel: this.oneChoiceQuestions[i].difficultyLevel,
-              starredQuestion: this.oneChoiceQuestions[i].starredQuestion,
-              candidatesAnswer: this.oneChoiceQuestions[i].whichAnswerChosen,
-              correctAnswer: this.oneChoiceQuestions[i].correctAnswer,
-              isAnswerCorrect: null
-            }
-            categoryWychowanieMetodaMetodykiAnswers.oneChoiceQuestions.push(dataFormattedObject);
-          }
+      if (this.oneChoiceQuestions) {
+        for (var i = 0; i < this.oneChoiceQuestions.length; i++) {
+          let dataFormattedObject = {
+            question: this.oneChoiceQuestions[i].question,
+            difficultyLevel: this.oneChoiceQuestions[i].difficultyLevel,
+            starredQuestion: this.oneChoiceQuestions[i].starredQuestion,
+            candidatesAnswer: this.oneChoiceQuestions[i].whichAnswerChosen,
+            correctAnswer: this.oneChoiceQuestions[i].correctAnswer,
+            isAnswerCorrect: null
+          };
+          categoryWychowanieMetodaMetodykiAnswers.oneChoiceQuestions.push(
+            dataFormattedObject
+          );
         }
-
-        if (this.multiChoiceQuestions) {
-          for (var i = 0; i < this.multiChoiceQuestions.length; i++) {
-            let dataFormattedObject = {
-              question: this.multiChoiceQuestions[i].question,
-              difficultyLevel: this.multiChoiceQuestions[i].difficultyLevel,
-              starredQuestion: this.multiChoiceQuestions[i].starredQuestion,
-              whichAnswersChosen: this.multiChoiceQuestions[i].whichAnswersChosen,
-              correctAnswers: this.multiChoiceQuestions[i].correctAnswers,
-              isAnswerCorrect: null,
-              questionAnswerScore: 0 
-            }
-            categoryWychowanieMetodaMetodykiAnswers.multiChoiceQuestions.push(dataFormattedObject);
-          }
-        }
-
-        if (this.videoBasedQuestions) {
-          for (i = 0; i < this.videoBasedQuestions.length; i++) {
-            let dataFormattedObject = {
-              question: this.videoBasedQuestions[i].question,
-              difficultyLevel: this.videoBasedQuestions[i].difficultyLevel,
-              starredQuestion: this.videoBasedQuestions[i].starredQuestion,
-              candidatesAnswer: this.videoBasedQuestions[i].whichAnswerChosen,
-              isAnswerCorrect: null
-            }
-            categoryWychowanieMetodaMetodykiAnswers.videoBasedQuestions.push(dataFormattedObject);
-          }
-        }
-
-        if (this.imageBasedQuestions) {
-          for (i = 0; i < this.imageBasedQuestions.length; i++) {
-            let dataFormattedObject = {
-              question: this.imageBasedQuestions[i].question,
-              difficultyLevel: this.imageBasedQuestions[i].difficultyLevel,
-              starredQuestion: this.imageBasedQuestions[i].starredQuestion,
-              candidatesAnswer: this.imageBasedQuestions[i].candidatesAnswer,
-              isAnswerCorrect: null,
-              imageURLForThisTest: this.imageBasedQuestions[i].imageURLForThisTest
-            }
-            categoryWychowanieMetodaMetodykiAnswers.imageBasedQuestions.push(dataFormattedObject);
-          }
-        }
-
-        if (this.textFieldQuestions) {
-          for (i = 0; i < this.textFieldQuestions.length; i++) {
-            let dataFormattedObject = {
-              question: this.textFieldQuestions[i].question,
-              difficultyLevel: this.textFieldQuestions[i].difficultyLevel,
-              starredQuestion: this.textFieldQuestions[i].starredQuestion,
-              candidatesAnswer: this.textFieldQuestions[i].candidatesAnswer,
-              isAnswerCorrect: null,
-              examinersNotes: ""
-            }
-            categoryWychowanieMetodaMetodykiAnswers.textFieldQuestions.push(dataFormattedObject);
-          }
-        }
-
-        console.log("Dispatchuję 'updateCurrentExamAnswers'");
-        this.$store.dispatch('updateCurrentExamAnswers', 'categoryWychowanieMetodaMetodyki')
-        console.log("------------Jeszcze w komponencie -------------");
-        console.log("to są wszystkie odpowiedzi które chce zapisac z tej kategorii");
-        console.log(categoryWychowanieMetodaMetodykiAnswers);
-        this.$store.commit('mapTheSecondCategoryAnswers', categoryWychowanieMetodaMetodykiAnswers);
-        this.snackbar = true;
       }
-    },
+
+      if (this.multiChoiceQuestions) {
+        for (var i = 0; i < this.multiChoiceQuestions.length; i++) {
+          let dataFormattedObject = {
+            question: this.multiChoiceQuestions[i].question,
+            difficultyLevel: this.multiChoiceQuestions[i].difficultyLevel,
+            starredQuestion: this.multiChoiceQuestions[i].starredQuestion,
+            whichAnswersChosen: this.multiChoiceQuestions[i].whichAnswersChosen,
+            correctAnswers: this.multiChoiceQuestions[i].correctAnswers,
+            isAnswerCorrect: null,
+            questionAnswerScore: 0
+          };
+          categoryWychowanieMetodaMetodykiAnswers.multiChoiceQuestions.push(
+            dataFormattedObject
+          );
+        }
+      }
+
+      if (this.videoBasedQuestions) {
+        for (i = 0; i < this.videoBasedQuestions.length; i++) {
+          let dataFormattedObject = {
+            question: this.videoBasedQuestions[i].question,
+            difficultyLevel: this.videoBasedQuestions[i].difficultyLevel,
+            starredQuestion: this.videoBasedQuestions[i].starredQuestion,
+            candidatesAnswer: this.videoBasedQuestions[i].whichAnswerChosen,
+            isAnswerCorrect: null
+          };
+          categoryWychowanieMetodaMetodykiAnswers.videoBasedQuestions.push(
+            dataFormattedObject
+          );
+        }
+      }
+
+      if (this.imageBasedQuestions) {
+        for (i = 0; i < this.imageBasedQuestions.length; i++) {
+          let dataFormattedObject = {
+            question: this.imageBasedQuestions[i].question,
+            difficultyLevel: this.imageBasedQuestions[i].difficultyLevel,
+            starredQuestion: this.imageBasedQuestions[i].starredQuestion,
+            candidatesAnswer: this.imageBasedQuestions[i].candidatesAnswer,
+            isAnswerCorrect: null,
+            imageURLForThisTest: this.imageBasedQuestions[i].imageURLForThisTest
+          };
+          categoryWychowanieMetodaMetodykiAnswers.imageBasedQuestions.push(
+            dataFormattedObject
+          );
+        }
+      }
+
+      if (this.textFieldQuestions) {
+        for (i = 0; i < this.textFieldQuestions.length; i++) {
+          let theQuestion;
+          if (this.textFieldQuestions[i].whichVariantDrawn) {
+            theQuestion = this.textFieldQuestions[i][
+              `variant${whichVariantDrawn}`
+            ];
+          } else {
+            theQuestion = this.textFieldQuestions[i].question;
+          }
+          let dataFormattedObject = {
+            question: theQuestion,
+            difficultyLevel: this.textFieldQuestions[i].difficultyLevel,
+            starredQuestion: this.textFieldQuestions[i].starredQuestion,
+            candidatesAnswer: this.textFieldQuestions[i].candidatesAnswer,
+            isAnswerCorrect: null,
+            examinersNotes: ""
+          };
+          categoryWychowanieMetodaMetodykiAnswers.textFieldQuestions.push(
+            dataFormattedObject
+          );
+        }
+      }
+
+      console.log("Dispatchuję 'updateCurrentExamAnswers'");
+      this.$store.dispatch(
+        "updateCurrentExamAnswers",
+        "categoryWychowanieMetodaMetodyki"
+      );
+      console.log("------------Jeszcze w komponencie -------------");
+      console.log(
+        "to są wszystkie odpowiedzi które chce zapisac z tej kategorii"
+      );
+      console.log(categoryWychowanieMetodaMetodykiAnswers);
+      this.$store.commit(
+        "mapTheSecondCategoryAnswers",
+        categoryWychowanieMetodaMetodykiAnswers
+      );
+      this.snackbar = true;
+    }
+  },
   mounted() {
     setTimeout(() => {
       let test = this.$refs;
@@ -399,6 +437,4 @@ export default {
 };
 </script>
 <style scoped>
-
-
 </style>
