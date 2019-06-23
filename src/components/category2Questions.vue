@@ -1,157 +1,190 @@
 <template>
-  <div id="cat2QuestionsStack">
+	<div id="cat2QuestionsStack">
 
-    <v-layout class="mt-4" v-for="oCQuestion in categoryWychowanieMetodaMetodyki.oneChoiceQuestions" :key="oCQuestion.question">
-      <v-flex>
-        <v-card hover>
-          <v-card-text primary-title>
-            <v-layout>
-              <h5>
-                {{oCQuestion.question}}
-              </h5>
-            </v-layout>
-            <v-layout row>
-              <v-flex>
-                <p v-if="oCQuestion.whichAnswerChosen">
-                  Wybrano: {{oCQuestion.whichAnswerChosen}}
-                </p>
-              </v-flex>
-            </v-layout>
-            <v-divider></v-divider>
-          </v-card-text>
-          <v-card-actions>
-            <v-radio-group v-model="oCQuestion.whichAnswerChosen">
-              <v-layout column>
-                <v-flex ref="OCQAnswer">
-                  <v-radio :label="oCQuestion.correctAnswer" :value="oCQuestion.correctAnswer"></v-radio>
-                </v-flex>
+		<v-layout class="mt-4"
+		 v-for="oCQuestion in categoryWychowanieMetodaMetodyki.oneChoiceQuestions"
+		 :key="oCQuestion.question">
+			<v-flex>
+				<v-card hover>
+					<v-card-text primary-title>
+						<v-layout>
+							<h5>
+								{{oCQuestion.question}}
+							</h5>
+						</v-layout>
+						<v-layout row>
+							<v-flex>
+								<p v-if="oCQuestion.whichAnswerChosen">
+									Wybrano: {{oCQuestion.whichAnswerChosen}}
+								</p>
+							</v-flex>
+						</v-layout>
+						<v-divider></v-divider>
+					</v-card-text>
+					<v-card-actions>
+						<v-radio-group v-model="oCQuestion.whichAnswerChosen">
+							<v-layout column>
+								<v-flex ref="OCQAnswer">
+									<v-radio :label="oCQuestion.correctAnswer"
+									 :value="oCQuestion.correctAnswer"></v-radio>
+								</v-flex>
 
-                <v-flex ref="OCQAnswer" >
-                  <v-radio  :label="oCQuestion.answer2" :value="oCQuestion.answer2">
-                  </v-radio>
-                </v-flex>
+								<v-flex ref="OCQAnswer">
+									<v-radio :label="oCQuestion.answer2"
+									 :value="oCQuestion.answer2">
+									</v-radio>
+								</v-flex>
 
-                <v-flex ref="OCQAnswer"  v-if="oCQuestion.answer3">
-                  <v-radio  :label="oCQuestion.answer3" :value="oCQuestion.answer3">
-                  </v-radio>
-                </v-flex>
+								<v-flex ref="OCQAnswer"
+								 v-if="oCQuestion.answer3">
+									<v-radio :label="oCQuestion.answer3"
+									 :value="oCQuestion.answer3">
+									</v-radio>
+								</v-flex>
 
-                <v-flex ref="OCQAnswer"  v-if="oCQuestion.answer4">
-                  <v-radio  :label="oCQuestion.answer4" :value="oCQuestion.answer4">
-                  </v-radio>
-                </v-flex>
-              </v-layout>
-            </v-radio-group>
-          </v-card-actions>
-        </v-card>
-      </v-flex>
-    </v-layout>
+								<v-flex ref="OCQAnswer"
+								 v-if="oCQuestion.answer4">
+									<v-radio :label="oCQuestion.answer4"
+									 :value="oCQuestion.answer4">
+									</v-radio>
+								</v-flex>
+							</v-layout>
+						</v-radio-group>
+					</v-card-actions>
+				</v-card>
+			</v-flex>
+		</v-layout>
 
-    <v-layout class="mt-4" v-for="mCQuestion in categoryWychowanieMetodaMetodyki.multiChoiceQuestions" :key="mCQuestion.question">
-      <v-flex>
-        <v-card hover>
-          <v-card-text primary-title>
-            <v-layout>
-              <h5>
-                {{mCQuestion.question}}
-              </h5>
-            </v-layout>
-            <v-layout row>
-              <v-flex>
-                <p v-if="mCQuestion.whichAnswersChosen">
-                  Wybrano: {{mCQuestion.whichAnswersChosen}}
-                </p>
-              </v-flex>
-            </v-layout>
-            <v-divider></v-divider>
-          </v-card-text>
-          <v-card-actions>
-            <v-flex offset-md1>
-              <v-radio-group row>
-                <v-checkbox :label="mCQuestion.answer1" v-model="mCQuestion.answer1State"></v-checkbox>
-                <v-checkbox :label="mCQuestion.answer2" v-model="mCQuestion.answer2State">
-                </v-checkbox>
-                <v-checkbox :label="mCQuestion.answer3" v-model="mCQuestion.answer3State">
-                </v-checkbox>
-                <v-checkbox :label="mCQuestion.answer4" v-model="mCQuestion.answer4State">
-                </v-checkbox>
-              </v-radio-group>
-            </v-flex>
-          </v-card-actions>
-        </v-card>
-      </v-flex>
-    </v-layout>
+		<v-layout class="mt-4"
+		 v-for="mCQuestion in categoryWychowanieMetodaMetodyki.multiChoiceQuestions"
+		 :key="mCQuestion.question">
+			<v-flex>
+				<v-card hover>
+					<v-card-text primary-title>
+						<v-layout>
+							<h5>
+								{{mCQuestion.question}}
+							</h5>
+						</v-layout>
+						<v-layout row>
+							<v-flex>
+								<p v-if="mCQuestion.whichAnswersChosen">
+									Wybrano: {{mCQuestion.whichAnswersChosen}}
+								</p>
+							</v-flex>
+						</v-layout>
+						<v-divider></v-divider>
+					</v-card-text>
+					<v-card-actions>
+						<v-flex offset-md1>
+							<v-radio-group row>
+								<v-checkbox :label="mCQuestion.answer1"
+								 v-model="mCQuestion.answer1State"></v-checkbox>
+								<v-checkbox :label="mCQuestion.answer2"
+								 v-model="mCQuestion.answer2State">
+								</v-checkbox>
+								<v-checkbox :label="mCQuestion.answer3"
+								 v-model="mCQuestion.answer3State">
+								</v-checkbox>
+								<v-checkbox :label="mCQuestion.answer4"
+								 v-model="mCQuestion.answer4State">
+								</v-checkbox>
+							</v-radio-group>
+						</v-flex>
+					</v-card-actions>
+				</v-card>
+			</v-flex>
+		</v-layout>
 
-    <v-layout class="mt-4" v-for="vBQuestion in categoryWychowanieMetodaMetodyki.videoBasedQuestions" :key="vBQuestion.question">
-      <v-flex>
-        <v-card hover>
-          <v-card-text primary-title>
-            <v-layout row>
-              <v-flex>
-                <iframe class="text-xs-center" id="testImage" :src="vBQuestion.videoURL" width="100%" height="400px">
-                </iframe>
-              </v-flex>
-            </v-layout>
-            <v-layout row>
-              <v-flex>
-                <h5>
-                  {{vBQuestion.question}}
-                </h5>
-              </v-flex>
-            </v-layout>
-            <v-layout row>
-              <v-flex>
-                <p v-if="vBQuestion.whichAnswerChosen">
-                  Wybrano: {{vBQuestion.whichAnswerChosen}}
-                </p>
-              </v-flex>
-            </v-layout>
-            <v-divider></v-divider>
-          </v-card-text>
-          <v-card-actions>
-            <v-flex offset-md1>
-              <v-radio-group row v-model="vBQuestion.whichAnswerChosen">
-                <v-radio :label="vBQuestion.correctAnswer" :value="vBQuestion.correctAnswer"></v-radio>
-                <v-radio :label="vBQuestion.answer2" :value="vBQuestion.answer2">
-                </v-radio>
-                <v-radio :label="vBQuestion.answer3" :value="vBQuestion.answer3">
-                </v-radio>
-                <v-radio :label="vBQuestion.answer4" :value="vBQuestion.answer4">
-                </v-radio>
-              </v-radio-group>
-            </v-flex>
-          </v-card-actions>
-        </v-card>
-      </v-flex>
-    </v-layout>
+		<v-layout class="mt-4"
+		 v-for="vBQuestion in categoryWychowanieMetodaMetodyki.videoBasedQuestions"
+		 :key="vBQuestion.question">
+			<v-flex>
+				<v-card hover>
+					<v-card-text primary-title>
+						<v-layout row>
+							<v-flex>
+								<iframe class="text-xs-center"
+								 id="testImage"
+								 :src="vBQuestion.videoURL"
+								 width="100%"
+								 height="400px">
+								</iframe>
+							</v-flex>
+						</v-layout>
+						<v-layout row>
+							<v-flex>
+								<h5>
+									{{vBQuestion.question}}
+								</h5>
+							</v-flex>
+						</v-layout>
+						<v-layout row>
+							<v-flex>
+								<p v-if="vBQuestion.whichAnswerChosen">
+									Wybrano: {{vBQuestion.whichAnswerChosen}}
+								</p>
+							</v-flex>
+						</v-layout>
+						<v-divider></v-divider>
+					</v-card-text>
+					<v-card-actions>
+						<v-flex offset-md1>
+							<v-radio-group row
+							 v-model="vBQuestion.whichAnswerChosen">
+								<v-radio :label="vBQuestion.correctAnswer"
+								 :value="vBQuestion.correctAnswer"></v-radio>
+								<v-radio :label="vBQuestion.answer2"
+								 :value="vBQuestion.answer2">
+								</v-radio>
+								<v-radio :label="vBQuestion.answer3"
+								 :value="vBQuestion.answer3">
+								</v-radio>
+								<v-radio :label="vBQuestion.answer4"
+								 :value="vBQuestion.answer4">
+								</v-radio>
+							</v-radio-group>
+						</v-flex>
+					</v-card-actions>
+				</v-card>
+			</v-flex>
+		</v-layout>
 
-    <v-layout class="mt-4" v-for="iBQuestion in categoryWychowanieMetodaMetodyki.imageBasedQuestions" :key="iBQuestion.question">
-      <v-flex>
-        <v-card hover>
-          <v-card-text primary-title>
-            <v-layout row>
-              <v-flex>
-                <iframe class="text-xs-center" id="testImage" :src="iBQuestion.imageURLForThisTest" width="100%" height="400px">
-                </iframe>
-              </v-flex>
-            </v-layout>
-            <v-layout row>
-              <v-flex>
-                <h5>
-                  {{iBQuestion.question}}
-                </h5>
-              </v-flex>
-            </v-layout>
-            <v-divider></v-divider>
-          </v-card-text>
-          <v-card-actions>
-            <v-flex>
-              <v-text-field label="Tu odpowiedz na pytanie" textarea v-model="iBQuestion.candidatesAnswer"></v-text-field>
-            </v-flex>
-          </v-card-actions>
-        </v-card>
-      </v-flex>
-    </v-layout>
+		<v-layout class="mt-4"
+		 v-for="iBQuestion in categoryWychowanieMetodaMetodyki.imageBasedQuestions"
+		 :key="iBQuestion.question">
+			<v-flex>
+				<v-card hover>
+					<v-card-text primary-title>
+						<v-layout row>
+							<v-flex>
+								<iframe class="text-xs-center"
+								 id="testImage"
+								 :src="iBQuestion.imageURLForThisTest"
+								 width="100%"
+								 height="400px">
+								</iframe>
+							</v-flex>
+						</v-layout>
+						<v-layout row>
+							<v-flex>
+								<h5>
+									{{iBQuestion.question}}
+								</h5>
+							</v-flex>
+						</v-layout>
+						<v-divider></v-divider>
+					</v-card-text>
+					<v-card-actions>
+						<v-flex>
+							<v-text-field label="Tu odpowiedz na pytanie"
+							 textarea
+							 v-model="iBQuestion.candidatesAnswer"></v-text-field>
+						</v-flex>
+					</v-card-actions>
+				</v-card>
+			</v-flex>
+		</v-layout>
 
     <v-layout class="mt-4" v-for="tFQuestion in categoryWychowanieMetodaMetodyki.textFieldQuestions" :key="tFQuestion.question">
       <v-flex>
@@ -179,67 +212,91 @@
       </v-flex>
     </v-layout>
 
-    <v-layout class="mt-3">
-      <v-flex>
-        <v-btn block secondary dark @click="saveTheAnswers">
-          ZAPISZ SWOJE ODPOWIEDZI Z TEGO DZIAŁU
-        </v-btn>
-      </v-flex>
-    </v-layout>
+		<v-layout class="mt-3">
+			<v-flex>
+				<v-btn block
+				 secondary
+				 dark
+				 @click="saveTheAnswers">
+					ZAPISZ SWOJE ODPOWIEDZI Z TEGO DZIAŁU
+				</v-btn>
+			</v-flex>
+		</v-layout>
 
-    <v-snackbar :timeout="timeout" top='top' v-model="snackbar">
-      Zapisano odpowiedzi z tego działu!
-      <v-btn flat class="pink--text" @click.native="snackbar = false">Close</v-btn>
-    </v-snackbar>
+		<v-snackbar :timeout="timeout"
+		 top='top'
+		 v-model="snackbar">
+			Zapisano odpowiedzi z tego działu!
+			<v-btn flat
+			 class="pink--text"
+			 @click.native="snackbar = false">Close</v-btn>
+		</v-snackbar>
 
 
-  </div>
+	</div>
 </template>
 <script>
-  export default {
-    name: "cat2Questions",
-    data() {
-      return {
-        snackbar: false,
-        timeout: 1300
-      }
+export default {
+  name: "cat2Questions",
+  data() {
+    return {
+      snackbar: false,
+      timeout: 1300
+    };
+  },
+  computed: {
+    categoryWychowanieMetodaMetodyki() {
+      return this.$store.state.categoryWychowanieMetodaMetodyki;
     },
-    computed: {
-      categoryWychowanieMetodaMetodyki() {
-        return this.$store.state.categoryWychowanieMetodaMetodyki;
-      },
-      oneChoiceQuestions() {
-        return this.$store.state.categoryWychowanieMetodaMetodyki.oneChoiceQuestions;
-      },
-      multiChoiceQuestions() {
-        return this.$store.state.categoryWychowanieMetodaMetodyki.multiChoiceQuestions;
-      },
-      videoBasedQuestions() {
-        return this.$store.state.categoryWychowanieMetodaMetodyki.videoBasedQuestions;
-      },
-      imageBasedQuestions() {
-        return this.$store.state.categoryWychowanieMetodaMetodyki.imageBasedQuestions;
-      },
-      textFieldQuestions() {
-        return this.$store.state.categoryWychowanieMetodaMetodyki.textFieldQuestions;
-      }
+    oneChoiceQuestions() {
+      return this.$store.state.categoryWychowanieMetodaMetodyki
+        .oneChoiceQuestions;
     },
-    methods: {
-      displayArrayAnswersCorrectly(arrayAnswer) {
-        console.log(arrayAnswer);
-        if (arrayAnswer) {
-          if ( arrayAnswer.length == 0) {
-            return false;
-          } else {
-            return true;
-          }
-        } else {
+    multiChoiceQuestions() {
+      return this.$store.state.categoryWychowanieMetodaMetodyki
+        .multiChoiceQuestions;
+    },
+    videoBasedQuestions() {
+      return this.$store.state.categoryWychowanieMetodaMetodyki
+        .videoBasedQuestions;
+    },
+    imageBasedQuestions() {
+      return this.$store.state.categoryWychowanieMetodaMetodyki
+        .imageBasedQuestions;
+    },
+    textFieldQuestions() {
+      return this.$store.state.categoryWychowanieMetodaMetodyki
+        .textFieldQuestions;
+    }
+  },
+  methods: {
+    displayArrayAnswersCorrectly(arrayAnswer) {
+      console.log(arrayAnswer);
+      if (arrayAnswer) {
+        if (arrayAnswer.length == 0) {
           return false;
+        } else {
+          return true;
         }
-      },
-      saveTheAnswers() {
-        let categoryWychowanieMetodaMetodykiAnswers = {
-          oneChoiceQuestions: [],
+      } else {
+        return false;
+      }
+    },
+    displayArrayAnswersCorrectly(arrayAnswer) {
+      console.log(arrayAnswer);
+      if (arrayAnswer) {
+        if (arrayAnswer.length == 0) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        return false;
+      }
+    },
+    saveTheAnswers() {
+      let categoryWychowanieMetodaMetodykiAnswers = {
+        oneChoiceQuestions: [],
           multiChoiceQuestions:[],
           videoBasedQuestions: [],
           imageBasedQuestions: [],
@@ -325,22 +382,21 @@
         this.snackbar = true;
       }
     },
-    mounted(){
-      setTimeout( () => {
-        let test = this.$refs;
-        for (const key in test) {
-          if (test.hasOwnProperty(key) && key == 'OCQAnswer') {
-            const answer = test[key];
-            for (let i = 0; i < answer.length; i++) {
-              let randomOrder = Math.round(Math.random() * 12);
-              answer[i].className = `flex order-xs${randomOrder}`;
-            }
+  mounted() {
+    setTimeout(() => {
+      let test = this.$refs;
+      for (const key in test) {
+        if (test.hasOwnProperty(key) && key == "OCQAnswer") {
+          const answer = test[key];
+          for (let i = 0; i < answer.length; i++) {
+            let randomOrder = Math.round(Math.random() * 12);
+            answer[i].className = `flex order-xs${randomOrder}`;
           }
         }
-      },2000)
-    }
+      }
+    }, 2000);
   }
-
+};
 </script>
 <style scoped>
 
